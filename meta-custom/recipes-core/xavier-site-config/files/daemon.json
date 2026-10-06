@@ -1,0 +1,13 @@
+{
+    "data-root": "/mnt/sdcard/docker",
+    "runtimes": {
+        "nvidia": {
+            "args": [],
+            "path": "nvidia-container-runtime"
+        }
+    },
+    "default-runtime": "nvidia",
+    "insecure-registries": [
+        "10.0.190.65:5000"
+    ]
+}
