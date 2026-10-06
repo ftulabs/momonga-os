@@ -1,0 +1,37 @@
+From: nhansp <nhan.094.vn@gmail.com>
+Subject: [PATCH] arm64: dts: tegra194-p2888-0001-p2822-0000: poll SD card
+
+The card-detect GPIO of the AGX Xavier devkit SD slot on this unit does
+not report insertion, so the SD card (Docker data root) is never
+probed. Poll for the card instead and enable sdhci@3440000, matching
+the device tree the board ran on stock L4T R35.4.1.
+
+Upstream-Status: Inappropriate [board-specific]
+Signed-off-by: nhansp <nhan.094.vn@gmail.com>
+---
+diff --git a/arch/arm64/boot/dts/nvidia/tegra194-p2888-0001-p2822-0000.dts b/arch/arm64/boot/dts/nvidia/tegra194-p2888-0001-p2822-0000.dts
+index 1df6a8b..c6d3e39 100644
+--- a/arch/arm64/boot/dts/nvidia/tegra194-p2888-0001-p2822-0000.dts
++++ b/arch/arm64/boot/dts/nvidia/tegra194-p2888-0001-p2822-0000.dts
+@@ -97,3 +97,21 @@
+ 		status = "okay";
+ 	};
+ };
++
++/ {
++	/*
++	 * The card-detect line of the SD slot on this unit does not report
++	 * insertion reliably; poll for the card instead. Matches the DTB the
++	 * board ran on stock L4T R35.4.1.
++	 */
++	sdhci@3400000 {
++		broken-cd;
++		/delete-property/ cd-gpios;
++		/delete-property/ cd-inverted;
++		/delete-property/ nvidia,cd-wakeup-capable;
++	};
++
++	sdhci@3440000 {
++		status = "okay";
++	};
++};
