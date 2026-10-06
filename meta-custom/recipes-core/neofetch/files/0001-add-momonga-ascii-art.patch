@@ -1,0 +1,33 @@
+From: Momonga Build <build@momonga.invalid>
+Subject: [PATCH] neofetch: add Momonga ASCII logo
+
+Upstream Neofetch is an archived Bash script. Add Momonga's local logo
+without changing upstream system-information behavior.
+
+--- a/neofetch
++++ b/neofetch
+@@ -5287,6 +5287,24 @@ get_distro_ascii() {
+     #
+     # $ascii_distro is the same as $distro.
+     case $(trim "$ascii_distro") in
++        "momonga"*|"Momonga"*)
++            set_colors 4 6 7 1
++            read -rd '' ascii_data <<'EOF'
++${c1}    ⣀⣀⡀        ⣀⣀⣀
++  ⢠⡟⠁⡔⣹       ⢸⡇⡀⡈⢳
++  ⢻⡄⠠⣇⠻⣄⡤⠤⠦⠶⠤⣄⣼⣠⡅
++   ⢳⣬⠋         ⠈⠃⣴⣏⣴
++  ⢀⡞⠁  ⣀⡀⠄  ⢀⢀⣀  ⠈⠳⡈⠆⠉
++ ⡶⠚   ⢼⣥⣬⡆  ⢰⣧⣤⣷   ⠣⠤⠄
++⢸⢋  ⡰⡢⡼⡍⠉⠠⠄⢆⡄⠉⠉⡵⣤⣶⠄
++⠈⢧⡆ ⠁⠂⠋   ⠈⠃   ⠉⠑⠈ ⠰⡜
++  ⠈⣷             ⡀⢸
++   ⢿⣠⠇           ⣇⡼
++    ⢹⡄           ⣧⣴⣀⡧⠞⠁
++    ⠈⣇⢰⡤⢤⣤⣤⣤⢤⡤⢤⣤⢸⡏⠉
++     ⠙⠚⠁       ⠙⠚⠃
++EOF
++        ;;
+         "AIX"*)
+             set_colors 2 7
+             read -rd '' ascii_data <<'EOF'
