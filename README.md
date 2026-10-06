@@ -10,8 +10,8 @@ The image includes these items:
 
 - CUDA 11.4, cuDNN, and TensorRT from the Jetson BSP.
 - CUDA 12.2 compatibility libraries.
-- Docker, Docker Compose, and NVIDIA container tools.
-- Rust, Cargo, CMake, Git, Python, and common debug tools.
+- Docker, Docker Compose, Podman, and NVIDIA container tools.
+- Rust, Cargo, CMake, Git, Python, Node and common debug tools.
 - OpenSSH and Tailscale.
 - Bash and zsh. The image build sets the root login shell to `/bin/bash`.
 
@@ -19,7 +19,7 @@ The Xavier GPU uses CUDA architecture 7.2.
 
 ## Host Requirements
 
-Use a supported Linux host. Ubuntu 22.04 LTS or Ubuntu 24.04 LTS is suitable.
+Use a supported Linux host. The build is tested against Ubuntu 24.04 LTS, but 22.04 or other distros may work too.
 
 Install these host packages:
 

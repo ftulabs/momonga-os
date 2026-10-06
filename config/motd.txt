@@ -1,0 +1,23 @@
+==========[ System Information ]===============================================
+      Hostname = (machine hostname)
+       Address = ... (tailnet) 
+               = ... (internet)
+        Kernel = (kernel name, version)
+  Distribution = MomongaOS 1.0 aarch64
+        Uptime = (uptime)
+          CUDA = (cuda version)
+           CPU = (cpu name)
+                 load: 0.00 0.00 0.00 ...GHz
+           GPU = (gpu name)
+                 load 0.00% ...GHz 
+        Memory = .../... GB used
+          Swap = ...MB free, ... GB total
+          Root = .../... GB used (...%) 
+     Processes = (number of processes)
+    Containers = (number of containers)
+
+==========[ Storage Information ]==============================================
+(output of df -h)
+
+==========[ Containers ] ======================================================
+(output of docker ps)
