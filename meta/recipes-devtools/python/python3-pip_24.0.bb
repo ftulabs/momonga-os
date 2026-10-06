@@ -36,6 +36,7 @@ SRC_URI += "file://no_shebang_mangling.patch \
             file://CVE-2026-8643.patch \
             file://CVE-2026-8643-regression_p1.patch \
             file://CVE-2026-8643-regression_p2.patch \
+            file://CVE-2026-13346.patch \
            "
 
 SRC_URI[sha256sum] = "ea9bd1a847e8c5774a5777bb398c19e80bcd4e2aa16a4b301b718fe6f593aba2"
@@ -45,6 +46,7 @@ do_install:append() {
 }
 
 CVE_PRODUCT = "pypa:pip"
+CVE_STATUS[CVE-2018-20225] = "disputed: Exploitation requires use of --extra-index-url with a private package not present on the primary public index; pip intentionally selects the highest version across configured indexes"
 
 do_install:append(){
 	# pip vendors distlib which ships Windows launcher templates (*.exe).
