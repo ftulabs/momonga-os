@@ -23,7 +23,7 @@ mkdir -p "$pkg"
 
 cp -L "$bundle" "$pkg/$name.tegraflash.tar.gz"
 cp -L "$deploy/$image-$machine.rootfs.manifest" "$pkg/$name.manifest"
-for cap in "$deploy"/*tegra-bl.cap "$deploy"/*tegra-kernel.cap; do
+for cap in "$deploy/$machine-tegra-bl.cap" "$deploy/$machine-tegra-kernel.cap"; do
     [ -e "$cap" ] && cp -L "$cap" "$pkg/"
 done
 sed -e "s|@NAME@|$name|g" -e "s|@REV@|$(git -C "$project_root" rev-parse HEAD)|g" \
