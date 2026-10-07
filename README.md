@@ -207,8 +207,9 @@ build directory's `cache/prserv.sqlite3` with the sstate cache so revisions stay
 - GPU: Vulkan, EGL/GLES, and the GBM backend stay installed without a display server, so the
   NVIDIA container runtime can pass the Tegra GPU userspace into containers. `tegra-udrm` provides
   `/dev/dri`.
-- Site: SD card (label `xavier-sd`) at `/mnt/sdcard`, Docker data root on it, NVIDIA default
-  runtime, local registry, read-only NFS model share (`xavier-site-config`).
+- Site: SD card (label `xavier-sd`) at `/mnt/sdcard` and read-only NFS model share
+  (`xavier-site-config`); Docker data root on the SD card, NVIDIA default runtime, and local
+  registry in `/etc/docker/daemon.json` (`nvidia-docker` bbappend).
 
 ## Device Access
 
