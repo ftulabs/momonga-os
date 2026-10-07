@@ -9,7 +9,8 @@ SRC_URI = "https://raw.githubusercontent.com/dylanaraps/neofetch/7.1.0/neofetch;
 SRC_URI[script.sha256sum] = "3dc33493e54029fb1528251552093a9f9a2894fcf94f9c3a6f809136a42348c7"
 
 S = "${WORKDIR}"
-PACKAGE_ARCH = "all"
+inherit allarch
+
 RDEPENDS:${PN} = "bash coreutils grep sed gawk"
 
 do_configure[noexec] = "1"

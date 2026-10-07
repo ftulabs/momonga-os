@@ -32,6 +32,48 @@ sudo apt-get install gawk wget git diffstat unzip texinfo gcc build-essential \
 
 Provide at least 300 GB of free disk space. Provide 32 GB of RAM when possible.
 
+## Per-user Distrobox
+
+The Xavier image provides Docker and NVIDIA's Docker runtime. Install
+Distrobox under your home directory, then create a container from NVIDIA's
+L4T JetPack image. Choose an image tag compatible with the Xavier's L4T
+release from the [NGC L4T JetPack catalog](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/l4t-jetpack):
+
+This project uses L4T 35.6.4. NGC currently lists `r35.4.1` as its newest R35
+JetPack image, so that tag is older and is not an exact match.
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/89luca89/distrobox/main/install \
+  | sh -s -- --prefix "$HOME/.local"
+export PATH="$HOME/.local/bin:$PATH"
+export CONTAINER_MANAGER=docker
+# Replace with the tag you intend to use; r35.4.1 is only an older example.
+L4T_IMAGE=nvcr.io/nvidia/l4t-jetpack:r35.4.1
+distrobox create --name l4t-dev \
+  --image "$L4T_IMAGE" \
+  --additional-flags "--runtime=nvidia --network=host"
+distrobox enter l4t-dev
+```
+
+Add both `export` lines to `~/.profile`. Docker must be running, and your user
+must be allowed to access its daemon. Docker daemon access is effectively
+root access. The L4T JetPack image includes CUDA, cuDNN, TensorRT, VPI, and
+Jetson multimedia libraries. Install any additional packages inside the
+container; they stay in its storage:
+
+```sh
+sudo apt-get update
+sudo apt-get install -y build-essential
+```
+
+The NVIDIA runtime uses the image's CSV mounts (not CDI) to pass the Xavier's
+GPU devices and driver libraries. To display an app on your computer, connect
+to the Xavier with `ssh -X`, enter the Distrobox, and start the app. The image
+includes `xauth` and enables SSH X11 forwarding; no screen or display server
+is needed on the Xavier. `--network=host` lets the container reach SSH's
+forwarding proxy on the Xavier. Your computer must have a working X11 display
+(Xorg or XWayland).
+
 ## Create a Build Directory
 
 Clone this project from its GitHub repository. Change to the project directory.
@@ -157,7 +199,7 @@ Use `usermod` to change groups. Add an administrator to `wheel` and, when needed
 usermod --append --groups wheel,docker xavier
 ```
 
-The image installs `sudo`. Members of `wheel` can run administrative commands with `sudo`, for example `sudo -i`. Use `su -` when you need a root login shell. The image uses SSH key authentication for root. Configure a key in `config/local.private.conf` before you build. The key installs at `/home/root/.ssh/authorized_keys`.
+The image installs `sudo`. Members of `wheel` can run administrative commands with `sudo`, for example `sudo -i`. Use `su -` when you need a root login shell. The image uses SSH key authentication for root. Configure a key in `config/local.private.conf` before you build. The key installs at `/root/.ssh/authorized_keys`.
 
 ## Reproducibility
 
