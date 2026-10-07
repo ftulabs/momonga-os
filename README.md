@@ -159,6 +159,57 @@ The script programs the boot firmware and the image to the Xavier internal eMMC.
 
 This procedure is for an unfused development kit. A device with Secure Boot fuses needs its signing keys and the matching `doflash.sh` signing options.
 
+## Redundant Boot (A/B)
+
+The image uses the redundant flash layout (`USE_REDUNDANT_FLASH_LAYOUT_DEFAULT = "1"`):
+
+- Bootloader A/B slots, updated through UEFI capsules (`tegra-uefi-capsules` builds
+  `jetson-agx-xavier-devkit-tegra-bl.cap`).
+- Root filesystem slots `APP` and `APP_b`, 14 GiB each. The UEFI boot chain retries a slot that
+  does not boot and falls back to the other one. `nv_update_verifier.service` marks a boot as
+  successful.
+- `nvbootctrl` (package `tegra-redundant-boot`) shows and selects slots:
+  `nvbootctrl dump-slots-info`, `nvbootctrl -t rootfs dump-slots-info`.
+
+Rootfs update without physical access:
+
+1. Write the new `core-image-minimal-jetson-agx-xavier-devkit.rootfs.ext4` to the inactive slot
+   partition (`/dev/disk/by-partlabel/APP_b` when slot A is active, `APP` otherwise).
+2. Select it: `nvbootctrl -t rootfs set-active-boot-slot <slot>`, then reboot.
+3. If the new slot fails to boot, the boot chain returns to the previous slot.
+
+Bootloader update: copy the capsule to `/boot/efi/EFI/UpdateCapsule/TEGRA_BL.Cap` on the ESP,
+set the UEFI `OsIndications` capsule bit, and reboot (see the meta-tegra documentation for
+`tegra-uefi-capsules`).
+
+## Package Management (dnf)
+
+The image includes `dnf` and the RPM database (`package-management` image feature). Packages
+come from an RPM feed built from the same build directory:
+
+1. Publish: `scripts/momonga-publish-feed build <rclone-remote:path>` runs
+   `bitbake package-index` and mirrors `build/tmp/deploy/rpm`.
+2. Point the image at the feed's public base URL in `config/local.private.conf`:
+   `PACKAGE_FEED_URIS = "https://<feed-host>/<path>"`. The image then contains repository
+   files for each package architecture.
+3. On the device: `dnf makecache && dnf install <package>`.
+
+`PRSERV_HOST = "localhost:0"` keeps package revisions increasing across rebuilds. Keep the
+build directory's `cache/prserv.sqlite3` with the sstate cache so revisions stay monotonic.
+
+## Host Integration
+
+- Kernel: `vsock`, `vhost_vsock`, and `vhost_net` modules for KVM guests
+  (`meta-custom/recipes-kernel/linux/files/virt-host.cfg`).
+- Device tree: SD card slot polled instead of using its card-detect GPIO, matching the board's
+  previous L4T installation.
+- Recovery: `kernel.panic = 10` and a 30 s systemd hardware watchdog (`momonga-recovery`).
+- GPU: Vulkan, EGL/GLES, and the GBM backend stay installed without a display server, so the
+  NVIDIA container runtime can pass the Tegra GPU userspace into containers. `tegra-udrm` provides
+  `/dev/dri`.
+- Site: SD card (label `xavier-sd`) at `/mnt/sdcard`, Docker data root on it, NVIDIA default
+  runtime, local registry, read-only NFS model share (`xavier-site-config`).
+
 ## Device Access
 
 The image enables the OpenSSH server. The tracked project does not contain SSH keys or Tailscale auth keys.
@@ -207,7 +258,7 @@ The setup script pins these external layers:
 
 | Layer | Revision |
 | --- | --- |
-| meta-openembedded | `b5874ea07d69919d9b40d59f2c2f0bbd24bc3259` |
+| meta-openembedded | `0f00f8b9a21950640da8c5707343e5540133f86e` |
 | meta-virtualization | `e066aa71b00d8ef5121fcab3a7ac813058cda09c` |
 | meta-tegra | `0c507bfe8d64a0e113beeff8f45e7fe0dfb5bc80` |
 | meta-tailscale | `c70a30954839eef1923627e3a2f056692611f789` |

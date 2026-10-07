@@ -1,0 +1,16 @@
+#!/bin/sh
+# Index the RPM feed of a build directory and mirror it to an rclone remote.
+# Usage: scripts/momonga-publish-feed <build-dir> <rclone-remote:path>
+set -eu
+
+build_dir=${1:?build directory}
+dest=${2:?rclone destination, e.g. r2:relay/momonga/feed}
+project_root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+
+cd "$project_root"
+set +u
+. ./oe-init-build-env "$build_dir" >/dev/null
+set -u
+bitbake package-index
+rclone sync --fast-list --checksum "$build_dir/tmp/deploy/rpm" "$dest"
+printf '%s\n' "Feed published to $dest. Point PACKAGE_FEED_URIS at its public base URL."
