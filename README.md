@@ -218,12 +218,15 @@ The image enables the OpenSSH server. The tracked project does not contain SSH k
 the image reports load, memory, root filesystem usage, and Tegra CPU/GPU/thermal data
 when the corresponding kernel interfaces are available.
 
-To add one SSH public key after setup, add these lines to the local `build/conf/local.conf` file before the build:
+To add SSH public keys for root after setup, add these lines to the local `build/conf/local.conf` file before the build. Separate several keys with a literal `\n`:
 
 ```bitbake
 CORE_IMAGE_EXTRA_INSTALL:append = " ssh-keys"
-SSH_AUTHORIZED_KEY = "ssh-ed25519 AAAA... user@host"
+SSH_AUTHORIZED_KEY = "ssh-ed25519 AAAA... user@host\nssh-ed25519 AAAA... other@host"
 ```
+
+Root can log in over SSH with these keys only (`PermitRootLogin prohibit-password`); password
+logins over SSH are refused.
 
 Do not commit that local configuration file.
 
