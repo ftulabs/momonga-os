@@ -47,6 +47,7 @@ clone_layer meta-tailscale https://github.com/ChristophHandschuh/meta-tailscale.
 
 mkdir -p "$build_dir/conf"
 cp "$project_root/config/local.conf" "$build_dir/conf/local.conf"
+printf 'MOMONGA_ROOT = "%s"\n' "$project_root" >> "$build_dir/conf/local.conf"
 if [ -f "$project_root/config/local.private.conf" ]; then
     cat "$project_root/config/local.private.conf" >> "$build_dir/conf/local.conf"
 fi
