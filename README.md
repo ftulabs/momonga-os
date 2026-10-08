@@ -225,7 +225,7 @@ bitbake package-index
 
 The Node.js and Neovim binaries require glibc 2.28 and 2.34 or newer, respectively. Confirm those requirements against the target image before installing. The target's RPM dependency solver may not detect every required glibc symbol version. The `nodejs-bin` RPM provides both Node.js and npm.
 
-ARM64 RPM feeds are published as GitHub Releases named `xavier-rpm-feed-*`. A GitHub Actions workflow deploys each release feed to GitHub Pages at `/rpm/momonga/aarch64/`. The RPMs use the Momonga RPM signing key; the workflow publishes its public key beside the feed. Once the custom domain `momonga.ftds.online` is configured for GitHub Pages, use this DNF configuration:
+ARM64 RPM feeds are published as GitHub Releases named `momonga-rpm-feed-*`. A GitHub Actions workflow deploys each release feed to GitHub Pages at `/rpm/momonga/aarch64/`. The RPMs use the Momonga RPM signing key; the workflow publishes its public key beside the feed. Once the custom domain `momonga.ftds.online` is configured for GitHub Pages, use this DNF configuration:
 
 ```ini
 [momonga-extra]

@@ -1,4 +1,4 @@
-name: Publish Xavier RPM feed to GitHub Pages
+name: Publish Momonga RPM feed to GitHub Pages
 
 on:
   release:
@@ -14,12 +14,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: xavier-rpm-feed-pages
+  group: momonga-rpm-feed-pages
   cancel-in-progress: false
 
 jobs:
   build:
-    if: startsWith(github.event.release.tag_name || inputs.release_tag, 'xavier-rpm-feed-')
+    if: startsWith(github.event.release.tag_name || inputs.release_tag, 'momonga-rpm-feed-')
     runs-on: ubuntu-latest
     steps:
       - name: Configure Pages
@@ -54,8 +54,8 @@ jobs:
           mkdir -p "$RUNNER_TEMP/site"
           cat > "$RUNNER_TEMP/site/index.html" <<'HTML'
           <!doctype html>
-          <html><head><meta charset="utf-8"><title>Momonga Xavier RPM feed</title></head>
-          <body><h1>Momonga Xavier RPM feed</h1>
+          <html><head><meta charset="utf-8"><title>Momonga RPM feed</title></head>
+          <body><h1>Momonga RPM feed</h1>
           <p>DNF repository: <code>/rpm/momonga/aarch64/</code></p></body></html>
           HTML
 
@@ -65,7 +65,7 @@ jobs:
           path: ${{ runner.temp }}/site
 
   deploy:
-    if: startsWith(github.event.release.tag_name || inputs.release_tag, 'xavier-rpm-feed-')
+    if: startsWith(github.event.release.tag_name || inputs.release_tag, 'momonga-rpm-feed-')
     needs: build
     runs-on: ubuntu-latest
     permissions:
