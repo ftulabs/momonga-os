@@ -1,4 +1,4 @@
-SUMMARY = "Prebuilt Node.js runtime and npm for AArch64"
+SUMMARY = "Prebuilt Node.js 24 runtime and npm for AArch64"
 HOMEPAGE = "https://nodejs.org/"
 LICENSE = "MIT & ISC & BSD-2-Clause & BSD-3-Clause & Artistic-2.0 & Apache-2.0"
 LIC_FILES_CHKSUM = "file://${S}/LICENSE;md5=edc0683b77d2c503217642fa000b5b31"

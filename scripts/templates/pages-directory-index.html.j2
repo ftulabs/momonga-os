@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }}</title>
+  <style>
+    :root { color-scheme: light dark; font-family: ui-monospace, "SF Mono", "Menlo", "Liga SFMono Nerd Font", "JetBrains Mono", "Adwaita Mono", "Fira Code", "Consolas", monospace; }
+    body { max-width: 72rem; margin: 2rem auto; padding: 0 1rem; }
+    h1 { font-size: 1.5rem; overflow-wrap: anywhere; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: .55rem .7rem; border-bottom: 1px solid #8886; text-align: left; }
+    th:last-child, td:last-child { text-align: right; white-space: nowrap; }
+    a { text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    footer { margin-top: 1rem; opacity: .7; font-size: .875rem; }
+  </style>
+</head>
+<body>
+  <h1>Index of {{ path }}</h1>
+  <table>
+    <thead><tr><th>Name</th><th>Type</th><th>Size</th></tr></thead>
+    <tbody>
+      {% if parent_href %}<tr><td><a href="{{ parent_href }}">../</a></td><td>Parent directory</td><td>—</td></tr>{% endif %}
+      {% for entry in entries %}
+      <tr>
+        <td><a href="{{ entry.href }}">{{ entry.name }}</a></td>
+        <td>{{ entry.kind }}</td>
+        <td>{{ entry.size }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <footer>Kani, the MomongaOS RPM repository. Copyright &copy; 2026 FTULabs.</footer>
+</body>
+</html>

@@ -22,8 +22,19 @@ jobs:
     if: startsWith(github.event.release.tag_name || inputs.release_tag, 'momonga-rpm-feed-')
     runs-on: ubuntu-latest
     steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+
+      - name: Install directory-listing template dependency
+        run: python -m pip install Jinja2
+
       - name: Configure Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Assemble feed from release assets
         env:
@@ -51,16 +62,12 @@ jobs:
           test -s "$feed/repodata/repomd.xml"
           test -s "$feed/RPM-GPG-KEY-momonga"
 
-          mkdir -p "$RUNNER_TEMP/site"
-          cat > "$RUNNER_TEMP/site/index.html" <<'HTML'
-          <!doctype html>
-          <html><head><meta charset="utf-8"><title>Momonga RPM feed</title></head>
-          <body><h1>Momonga RPM feed</h1>
-          <p>DNF repository: <code>/rpm/momonga/aarch64/</code></p></body></html>
-          HTML
+          python scripts/generate_pages_indexes.py \
+            --root "$RUNNER_TEMP/site" \
+            --template scripts/templates/pages-directory-index.html.j2
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: ${{ runner.temp }}/site
 
@@ -77,4 +84,4 @@ jobs:
     steps:
       - name: Deploy Pages site
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

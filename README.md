@@ -219,13 +219,13 @@ The custom recipes in `meta-custom/` are part of this project. The source archiv
 The `meta-custom` layer provides prebuilt ARM64 packages for Neovim, `bat`, `fzf`, and Node.js with npm. These recipes package official upstream Linux ARM64 release binaries, so they do not compile Neovim, Rust, or V8. It also enables Zsh's dynamic modules, which are required by plugins such as Powerlevel10k and fzf-tab. Build the RPMs and repository index with:
 
 ```sh
-bitbake neovim bat fzf nodejs-bin zsh
+bitbake neovim bat fzf nodejs24 zsh
 bitbake package-index
 ```
 
-The Node.js and Neovim binaries require glibc 2.28 and 2.34 or newer, respectively. Confirm those requirements against the target image before installing. The target's RPM dependency solver may not detect every required glibc symbol version. The `nodejs-bin` RPM provides both Node.js and npm.
+The Node.js and Neovim binaries require glibc 2.28 and 2.34 or newer, respectively. Confirm those requirements against the target image before installing. The target's RPM dependency solver may not detect every required glibc symbol version. The `nodejs24` RPM provides both Node.js 24 and npm.
 
-ARM64 RPM feeds are published as GitHub Releases named `momonga-rpm-feed-*`. A GitHub Actions workflow deploys each release feed to GitHub Pages at `/rpm/momonga/aarch64/`. The RPMs use the Momonga RPM signing key; the workflow publishes its public key beside the feed. Once the custom domain `momonga.ftds.online` is configured for GitHub Pages, use this DNF configuration:
+ARM64 RPM feeds are published as GitHub Releases named `momonga-rpm-feed-*`. A GitHub Actions workflow deploys each release feed to GitHub Pages at `/rpm/momonga/aarch64/` and generates browsable directory indexes at every directory level. The RPMs use the Momonga RPM signing key; the workflow publishes its public key beside the feed. Once the custom domain `momonga.ftds.online` is configured for GitHub Pages, use this DNF configuration:
 
 ```ini
 [momonga-extra]
