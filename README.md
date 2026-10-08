@@ -225,15 +225,15 @@ bitbake package-index
 
 The Node.js and Neovim binaries require glibc 2.28 and 2.34 or newer, respectively. Confirm those requirements against the target image before installing. The target's RPM dependency solver may not detect every required glibc symbol version. The `nodejs-bin` RPM provides both Node.js and npm.
 
-Xavier RPM feeds are published as GitHub Releases named `xavier-rpm-feed-*`. A GitHub Actions workflow deploys each release feed to GitHub Pages at `/xavier/scarthgap/armv8a_tegra/`. The RPMs use the Momonga RPM signing key; the workflow publishes its public key beside the feed. On Xavier, configure DNF with:
+ARM64 RPM feeds are published as GitHub Releases named `xavier-rpm-feed-*`. A GitHub Actions workflow deploys each release feed to GitHub Pages at `/dists/aarch64/`. The RPMs use the Momonga RPM signing key; the workflow publishes its public key beside the feed. Once the custom domain `momonga.ftds.online` is configured for GitHub Pages, use this DNF configuration:
 
 ```ini
 [momonga-extra]
 name=Momonga Extra Packages
-baseurl=https://ftulabs.github.io/momonga-os/xavier/scarthgap/armv8a_tegra/
+baseurl=https://momonga.ftds.online/dists/aarch64/
 enabled=1
 gpgcheck=1
-gpgkey=https://ftulabs.github.io/momonga-os/xavier/scarthgap/armv8a_tegra/RPM-GPG-KEY-momonga
+gpgkey=https://momonga.ftds.online/dists/aarch64/RPM-GPG-KEY-momonga
 repo_gpgcheck=0
 ```
 

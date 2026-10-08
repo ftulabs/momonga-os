@@ -3,6 +3,12 @@ name: Publish Xavier RPM feed to GitHub Pages
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Published feed release tag to deploy
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -13,7 +19,7 @@ concurrency:
 
 jobs:
   build:
-    if: startsWith(github.event.release.tag_name, 'xavier-rpm-feed-')
+    if: startsWith(github.event.release.tag_name || inputs.release_tag, 'xavier-rpm-feed-')
     runs-on: ubuntu-latest
     steps:
       - name: Configure Pages
@@ -22,10 +28,10 @@ jobs:
       - name: Assemble feed from release assets
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
-          feed="$RUNNER_TEMP/site/xavier/scarthgap/armv8a_tegra"
+          feed="$RUNNER_TEMP/site/dists/aarch64"
           mkdir -p "$feed" "$RUNNER_TEMP/metadata"
 
           gh release download "$RELEASE_TAG" \
@@ -50,7 +56,7 @@ jobs:
           <!doctype html>
           <html><head><meta charset="utf-8"><title>Momonga Xavier RPM feed</title></head>
           <body><h1>Momonga Xavier RPM feed</h1>
-          <p>For DNF, use the armv8a_tegra repository path.</p></body></html>
+          <p>DNF repository: <code>/dists/aarch64/</code></p></body></html>
           HTML
 
       - name: Upload Pages artifact
@@ -59,7 +65,7 @@ jobs:
           path: ${{ runner.temp }}/site
 
   deploy:
-    if: startsWith(github.event.release.tag_name, 'xavier-rpm-feed-')
+    if: startsWith(github.event.release.tag_name || inputs.release_tag, 'xavier-rpm-feed-')
     needs: build
     runs-on: ubuntu-latest
     permissions:
