@@ -31,7 +31,7 @@ jobs:
           RELEASE_TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
-          feed="$RUNNER_TEMP/site/dists/aarch64"
+          feed="$RUNNER_TEMP/site/rpm/momonga/aarch64"
           mkdir -p "$feed" "$RUNNER_TEMP/metadata"
 
           gh release download "$RELEASE_TAG" \
@@ -56,7 +56,7 @@ jobs:
           <!doctype html>
           <html><head><meta charset="utf-8"><title>Momonga Xavier RPM feed</title></head>
           <body><h1>Momonga Xavier RPM feed</h1>
-          <p>DNF repository: <code>/dists/aarch64/</code></p></body></html>
+          <p>DNF repository: <code>/rpm/momonga/aarch64/</code></p></body></html>
           HTML
 
       - name: Upload Pages artifact
