@@ -60,6 +60,7 @@ jobs:
 
           tar -xzf "$RUNNER_TEMP/metadata/feed-repodata.tar.gz" -C "$feed"
           test -s "$feed/repodata/repomd.xml"
+          test -s "$feed/repodata/repomd.xml.asc"
           test -s "$feed/RPM-GPG-KEY-momonga"
 
           python scripts/generate_pages_indexes.py \

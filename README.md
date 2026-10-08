@@ -225,16 +225,18 @@ bitbake package-index
 
 The Node.js and Neovim binaries require glibc 2.28 and 2.34 or newer, respectively. Confirm those requirements against the target image before installing. The target's RPM dependency solver may not detect every required glibc symbol version. The `nodejs24` RPM provides both Node.js 24 and npm.
 
-ARM64 RPM feeds are published as GitHub Releases named `momonga-rpm-feed-*`. A GitHub Actions workflow deploys each release feed to GitHub Pages at `/rpm/momonga/aarch64/` and generates browsable directory indexes at every directory level. The RPMs use the Momonga RPM signing key; the workflow publishes its public key beside the feed. Once the custom domain `momonga.ftds.online` is configured for GitHub Pages, use this DNF configuration:
+ARM64 RPM feeds are published as GitHub Releases named `momonga-rpm-feed-*`. A GitHub Actions workflow deploys each release feed to GitHub Pages at `/rpm/momonga/aarch64/` and generates browsable directory indexes at every directory level. The RPMs and repository metadata use the Momonga signing key; the workflow publishes its public key beside the feed. Use this DNF configuration:
+
+Enable this configuration only after `https://kani.ftds.online/rpm/momonga/aarch64/repodata/repomd.xml.asc` returns HTTP 200. The latest signed-metadata deployment has not yet exposed that file at the public URL.
 
 ```ini
 [momonga-extra]
 name=Momonga Extra Packages
-baseurl=https://momonga.ftds.online/rpm/momonga/aarch64/
+baseurl=https://kani.ftds.online/rpm/momonga/aarch64/
 enabled=1
 gpgcheck=1
-gpgkey=https://momonga.ftds.online/rpm/momonga/aarch64/RPM-GPG-KEY-momonga
-repo_gpgcheck=0
+gpgkey=https://kani.ftds.online/rpm/momonga/aarch64/RPM-GPG-KEY-momonga
+repo_gpgcheck=1
 ```
 
 The build result can change when an upstream download is removed or changed. Keep a copy of `build/downloads/` if you must make the same build without network access.
