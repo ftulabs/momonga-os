@@ -216,10 +216,10 @@ The custom recipes in `meta-custom/` are part of this project. The source archiv
 
 ## Extra ARM64 Packages
 
-The `meta-custom` layer provides prebuilt ARM64 packages for Neovim, `bat`, and Node.js with npm. These recipes package official upstream Linux ARM64 release binaries, so they do not compile Neovim, Rust, or V8. It also enables Zsh's dynamic modules, which are required by plugins such as Powerlevel10k and fzf-tab. Build the RPMs and repository index with:
+The `meta-custom` layer provides prebuilt ARM64 packages for Neovim, `bat`, `fzf`, and Node.js with npm. These recipes package official upstream Linux ARM64 release binaries, so they do not compile Neovim, Rust, or V8. It also enables Zsh's dynamic modules, which are required by plugins such as Powerlevel10k and fzf-tab. Build the RPMs and repository index with:
 
 ```sh
-bitbake neovim bat nodejs-bin zsh
+bitbake neovim bat fzf nodejs-bin zsh
 bitbake package-index
 ```
 
