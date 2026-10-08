@@ -241,7 +241,9 @@ The image uses the `Asia/Ho_Chi_Minh` timezone. It starts `systemd-timesyncd` at
 
 `/etc/passwd` is present in the final image. The image sets the root login shell to `/bin/bash`.
 
-You can create and manage users after flashing. Sign in as root on the local console or through SSH with the key that you configured. Then create a user and set its password:
+The image creates the login users listed in `MOMONGA_USERS` in `config/local.conf` (`name:uid:shell`). They belong to `wheel`, which has passwordless `sudo`, and to `docker`, `kvm`, `video` and `render`. Set each user's SSH key as `MOMONGA_USER_KEY_<name>` in `config/local.private.conf`; the image installs it at `/etc/ssh/authorized_keys/<name>`, which `sshd` reads in addition to `~/.ssh/authorized_keys`. These users have no password. `/home` is a bind mount of `/mnt/sdcard/home`, so home directories survive a reflash.
+
+You can also create and manage users after flashing. Sign in as root on the local console or through SSH with the key that you configured. Then create a user and set its password:
 
 ```sh
 useradd --create-home --shell /bin/bash xavier
