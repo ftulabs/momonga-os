@@ -3,13 +3,19 @@
 # and the SSH keys in MOMONGA_USER_KEY_<name> (several separated by a literal
 # \n). The keys go in /etc/ssh/authorized_keys/<name>, not the home directory:
 # /home is a bind mount from the SD card and would hide them.
+# Only the images in MOMONGA_USERS_IMAGES get the users: IMAGE_CLASSES also
+# reaches the initramfs and ESP images, which lack groups such as docker.
 
 inherit extrausers
 
 MOMONGA_USERS ??= ""
 MOMONGA_USER_GROUPS ??= "wheel,docker,kvm,video,render"
+MOMONGA_USERS_IMAGES ??= "core-image-minimal"
 
 python __anonymous() {
+    if d.getVar('PN') not in (d.getVar('MOMONGA_USERS_IMAGES') or '').split():
+        return
+    d.appendVar('ROOTFS_POSTPROCESS_COMMAND', ' install_momonga_user_keys;')
     groups = d.getVar('MOMONGA_USER_GROUPS')
     for entry in (d.getVar('MOMONGA_USERS') or '').split():
         name, uid, shell = entry.split(':')
@@ -18,7 +24,6 @@ python __anonymous() {
                     % (uid, name, uid, name, groups, shell, name))
 }
 
-ROOTFS_POSTPROCESS_COMMAND += "install_momonga_user_keys;"
 python install_momonga_user_keys () {
     import os
     keydir = os.path.join(d.getVar('IMAGE_ROOTFS'), 'etc/ssh/authorized_keys')
