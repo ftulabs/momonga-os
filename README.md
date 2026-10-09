@@ -171,12 +171,24 @@ The image uses the redundant flash layout (`USE_REDUNDANT_FLASH_LAYOUT_DEFAULT =
 - `nvbootctrl` (package `tegra-redundant-boot`) shows and selects slots:
   `nvbootctrl dump-slots-info`, `nvbootctrl -t rootfs dump-slots-info`.
 
-Rootfs update without physical access:
+Rootfs update without physical access (`momonga-ota`, package `momonga-recovery`). A flash
+package from `scripts/momonga-flash-package` contains `<name>.rootfs.ext4.zst` and its manifest
+`<name>.ota`:
 
-1. Write the new `core-image-minimal-jetson-agx-xavier-devkit.rootfs.ext4` to the inactive slot
-   partition (`/dev/disk/by-partlabel/APP_b` when slot A is active, `APP` otherwise).
-2. Select it: `nvbootctrl -t rootfs set-active-boot-slot <slot>`, then reboot.
-3. If the new slot fails to boot, the boot chain returns to the previous slot.
+1. `sudo momonga-ota install <name>.ota <name>.rootfs.ext4.zst` (local paths or http(s) URLs,
+   such as presigned R2 links). It writes the image into the inactive slot (`APP_b` when slot A
+   runs, `APP` otherwise), reads it back against the manifest's digest, copies the SSH host keys
+   and the Tailscale state into it, and selects it for the next boot.
+2. Reboot. The new slot boots on trial: `nv_update_verifier` skips it, and
+   `momonga-boot-trial` runs `nvbootctrl verify` once sshd answers, a default route exists, and
+   Tailscale is running. Its log: `journalctl -b -u momonga-boot-trial`.
+3. If the board is not reachable 10 minutes after a trial boot, it reboots. After
+   `RootfsRetryCountMax` (3) unverified boots, the boot chain returns to the previous slot.
+4. To go back by hand: `sudo nvbootctrl -t rootfs set-active-boot-slot <slot>`, then reboot.
+   `momonga-ota status` shows the slots.
+
+State on the rootfs that `momonga-ota` does not copy (anything installed with dnf, edits under
+`/etc`) stays with the old slot; `/home` and the Docker data root are on the SD card and shared.
 
 Bootloader update: copy the capsule to `/boot/efi/EFI/UpdateCapsule/TEGRA_BL.Cap` on the ESP,
 set the UEFI `OsIndications` capsule bit, and reboot (see the meta-tegra documentation for
@@ -203,7 +215,11 @@ build directory's `cache/prserv.sqlite3` with the sstate cache so revisions stay
   (`meta-custom/recipes-kernel/linux/files/virt-host.cfg`).
 - Device tree: SD card slot polled instead of using its card-detect GPIO, matching the board's
   previous L4T installation.
-- Recovery: `kernel.panic = 10` and a 30 s systemd hardware watchdog (`momonga-recovery`).
+- Recovery (`momonga-recovery`): reboot 10 s after a kernel panic (`panic=10` on the kernel
+  command line), a 30 s systemd hardware watchdog, and a reboot instead of a shell when the
+  initramfs cannot mount the rootfs or systemd enters emergency mode (after a 5 minute window
+  for a console login). Unverified boots use up the slot's retries, then the boot chain falls
+  back to the other slot.
 - GPU: Vulkan, EGL/GLES, and the GBM backend stay installed without a display server, so the
   NVIDIA container runtime can pass the Tegra GPU userspace into containers. `tegra-udrm` provides
   `/dev/dri`.

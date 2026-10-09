@@ -1,7 +1,7 @@
 #!/bin/sh
 # Collect a flashable release from a build directory: tegraflash bundle, UEFI
-# capsules for later A/B bootloader updates, image manifest, flashing guide,
-# and checksums. Optionally upload it with rclone.
+# capsules for later A/B bootloader updates, rootfs image for momonga-ota, image
+# manifest, flashing guide, and checksums. Optionally upload it with rclone.
 # Usage: scripts/momonga-flash-package <build-dir> <out-dir> [rclone-remote:path]
 set -eu
 
@@ -26,6 +26,17 @@ cp -L "$deploy/$image-$machine.rootfs.manifest" "$pkg/$name.manifest"
 for cap in "$deploy/$machine-tegra-bl.cap" "$deploy/$machine-tegra-kernel.cap"; do
     [ -e "$cap" ] && cp -L "$cap" "$pkg/"
 done
+# Root filesystem for momonga-ota: the ext4 image, compressed, and a manifest with
+# the size and digest of the uncompressed image to check the written slot against.
+rootfs="$deploy/$image-$machine.rootfs.ext4"
+[ -e "$rootfs" ] || { printf '%s\n' "missing $rootfs" >&2; exit 1; }
+zstd -q -T0 -10 < "$rootfs" > "$pkg/$name.rootfs.ext4.zst"
+{
+    printf 'image=%s\n' "$name.rootfs.ext4.zst"
+    printf 'size=%s\n' "$(stat -L -c %s "$rootfs")"
+    printf 'sha256=%s\n' "$(sha256sum < "$rootfs" | cut -d' ' -f1)"
+    printf 'rev=%s\n' "$(git -C "$project_root" rev-parse HEAD)"
+} > "$pkg/$name.ota"
 sed -e "s|@NAME@|$name|g" -e "s|@REV@|$(git -C "$project_root" rev-parse HEAD)|g" \
     "$project_root/config/FLASHING.md.in" > "$pkg/FLASHING.md"
 (cd "$pkg" && sha256sum -- * > SHA256SUMS)

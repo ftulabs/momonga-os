@@ -1,0 +1,95 @@
+#!/bin/bash
+# Root filesystem A/B update. Writes a rootfs image into the inactive slot,
+# carries the board's identity over (SSH host keys, Tailscale node state), and
+# selects the slot for the next boot on trial: momonga-boot-trial verifies it
+# once the board is reachable, otherwise the UEFI boot chain falls back to the
+# current slot.
+#
+# Usage:
+#   momonga-ota install <manifest> <image>
+#   momonga-ota status
+# <manifest> is the <name>.ota file of a flash package
+# (scripts/momonga-flash-package), <image> its <name>.rootfs.ext4.zst; each is a
+# local path or an http(s) URL. Reboot afterwards to start the new slot.
+set -euo pipefail
+shopt -s nullglob
+
+trial_marker=/var/lib/momonga/boot-trial
+
+die() { printf 'momonga-ota: %s\n' "$*" >&2; exit 1; }
+log() { printf 'momonga-ota: %s\n' "$*" >&2; }
+
+fetch() {
+    case $1 in
+    http://* | https://*) curl -fsSL --retry 3 "$1" ;;
+    *) cat -- "$1" ;;
+    esac
+}
+
+status() {
+    nvbootctrl -t rootfs dump-slots-info
+    if [[ -e $trial_marker ]]; then
+        echo "This boot is on trial: journalctl -b -u momonga-boot-trial"
+    fi
+}
+
+install_image() {
+    local manifest=$1 image=$2 cur target part dev info size sha got mnt
+
+    (( EUID == 0 )) || die "run as root"
+    exec 9> /run/momonga-ota.lock
+    flock -n 9 || die "another momonga-ota is running"
+    [[ ! -e $trial_marker ]] || die "the running slot is still on trial; let it verify first"
+
+    cur=$(nvbootctrl -t rootfs get-current-slot)
+    case $cur in
+    0) target=1 part=APP_b ;;
+    1) target=0 part=APP ;;
+    *) die "rootfs A/B is not enabled (current slot: $cur)" ;;
+    esac
+    dev=$(readlink -f "/dev/disk/by-partlabel/$part")
+    [[ -b $dev ]] || die "no partition $part"
+    ! findmnt -rn -S "$dev" > /dev/null || die "$dev is mounted"
+
+    info=$(fetch "$manifest") || die "cannot read $manifest"
+    size=$(sed -n 's/^size=\([0-9]\+\)$/\1/p' <<< "$info")
+    sha=$(sed -n 's/^sha256=\([0-9a-f]\{64\}\)$/\1/p' <<< "$info")
+    [[ -n $size && -n $sha ]] || die "$manifest has no size= and sha256= lines"
+    (( size <= $(blockdev --getsize64 "$dev") )) || die "image ($size bytes) does not fit $part"
+
+    log "writing slot $target ($part, $dev)"
+    fetch "$image" | zstd -dc | dd of="$dev" bs=4M iflag=fullblock conv=fsync status=progress
+    # Drop the cached blocks so the check reads back what reached the eMMC.
+    blockdev --flushbufs "$dev"
+    got=$(head -c "$size" "$dev" | sha256sum)
+    [[ ${got%% *} == "$sha" ]] || die "slot $target does not match the image; slot $cur stays active"
+    log "slot $target matches the image"
+
+    mnt=$(mktemp -d)
+    mount "$dev" "$mnt"
+    trap 'umount "$mnt"; rmdir "$mnt"' EXIT
+    # Same SSH host keys and the same Tailscale node, so the board keeps its
+    # tailnet address and ssh does not see a changed host.
+    for key in /etc/ssh/ssh_host_*key*; do
+        cp -p "$key" "$mnt/etc/ssh/"
+    done
+    if [[ -d /var/lib/tailscale ]]; then
+        rm -rf "$mnt/var/lib/tailscale"
+        cp -a /var/lib/tailscale "$mnt/var/lib/"
+    fi
+    install -d "$mnt${trial_marker%/*}"
+    : > "$mnt$trial_marker"
+    umount "$mnt"
+    rmdir "$mnt"
+
+    nvbootctrl -t rootfs set-active-boot-slot "$target"
+    log "slot $target is active for the next boot, on trial. Reboot to start it. If it is not"
+    log "reachable (sshd, default route, Tailscale) within 10 minutes of each boot, it reboots,"
+    log "and the boot chain returns to slot $cur once the slot's retries are used up."
+}
+
+case ${1:-} in
+install) (( $# == 3 )) || die "usage: momonga-ota install <manifest> <image>"; install_image "$2" "$3" ;;
+status) status ;;
+*) echo "usage: momonga-ota install <manifest> <image> | status" >&2; exit 2 ;;
+esac

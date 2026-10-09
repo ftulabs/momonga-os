@@ -1,0 +1,40 @@
+#!/bin/bash
+# Trial boot of a rootfs slot installed by momonga-ota (marker
+# /var/lib/momonga/boot-trial; nv_update_verifier skips such boots). Marks the
+# boot good with `nvbootctrl verify` once the board is reachable: sshd answers,
+# there is a default route, and Tailscale is running. If that has not happened
+# 10 minutes after boot, reboot. Every boot that ends unverified uses up one of
+# the slot's UEFI retries (RootfsRetryCountMax), and then the boot chain falls
+# back to the other slot.
+set -u
+
+marker=/var/lib/momonga/boot-trial
+deadline=600 # seconds since boot
+
+uptime_s() { local u; read -r u _ < /proc/uptime; echo "${u%.*}"; }
+sshd_ok() {
+    timeout 5 bash -c 'exec 3<> /dev/tcp/127.0.0.1/22 && read -r -t 4 line <&3 && [[ $line == SSH-* ]]' 2> /dev/null
+}
+route_ok() { awk '$2 == "00000000" { found = 1 } END { exit !found }' /proc/net/route; }
+tailscale_ok() {
+    timeout 10 tailscale status --json --peers=false 2> /dev/null | grep -q '"BackendState": *"Running"'
+}
+
+while (( $(uptime_s) < deadline )); do
+    if sshd_ok && route_ok && tailscale_ok; then
+        if nvbootctrl verify; then
+            rm -f "$marker"
+            sync
+            echo "reachable $(uptime_s) s after boot: slot verified"
+            exit 0
+        fi
+        echo "nvbootctrl verify failed"
+    fi
+    sleep 5
+done
+
+ok() { "$@" && echo up || echo down; }
+echo "not reachable $deadline s after boot (sshd $(ok sshd_ok), default route $(ok route_ok)," \
+    "tailscale $(ok tailscale_ok)): rebooting"
+systemctl --no-block reboot
+exit 1

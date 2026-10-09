@@ -1,0 +1,15 @@
+[Unit]
+Description=Verify a trial rootfs slot once the board is reachable
+ConditionPathExists=/var/lib/momonga/boot-trial
+DefaultDependencies=no
+After=local-fs.target
+Conflicts=shutdown.target
+Before=shutdown.target
+# Keep the deadline running in emergency mode too.
+IgnoreOnIsolate=yes
+
+[Service]
+ExecStart=/usr/sbin/momonga-boot-trial
+
+[Install]
+WantedBy=sysinit.target
