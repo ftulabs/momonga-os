@@ -220,6 +220,7 @@ build directory's `cache/prserv.sqlite3` with the sstate cache so revisions stay
   initramfs cannot mount the rootfs or systemd enters emergency mode (after a 5 minute window
   for a console login). Unverified boots use up the slot's retries, then the boot chain falls
   back to the other slot.
+- Power: MAXN by default (`NVPMODEL_CONFIG_DEFAULT = "0"`).
 - GPU: Vulkan, EGL/GLES, and the GBM backend stay installed without a display server, so the
   NVIDIA container runtime can pass the Tegra GPU userspace into containers. `tegra-udrm` provides
   `/dev/dri`.
