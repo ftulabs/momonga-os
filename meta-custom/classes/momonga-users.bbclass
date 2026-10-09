@@ -9,7 +9,7 @@
 inherit extrausers
 
 MOMONGA_USERS ??= ""
-MOMONGA_USER_GROUPS ??= "wheel,docker,kvm,video,render"
+MOMONGA_USER_GROUPS ??= "wheel,docker,kvm,video,render,jtop"
 MOMONGA_USER_LINGER ??= ""
 MOMONGA_USERS_IMAGES ??= "core-image-minimal"
 

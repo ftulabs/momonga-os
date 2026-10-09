@@ -41,3 +41,4 @@ sstate-cache/
 toaster.sqlite
 .vscode/
 .wrangler/
+.agents/plans
