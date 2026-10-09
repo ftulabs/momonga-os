@@ -19,13 +19,14 @@
 <body>
   <h1>Index of {{ path }}</h1>
   <table>
-    <thead><tr><th>Name</th><th>Type</th><th>Size</th></tr></thead>
+    <thead><tr><th>Name</th><th>Type</th><th>Modified</th><th>Size</th></tr></thead>
     <tbody>
-      {% if parent_href %}<tr><td><a href="{{ parent_href }}">../</a></td><td>Parent directory</td><td>—</td></tr>{% endif %}
+      {% if parent_href %}<tr><td><a href="{{ parent_href }}">../</a></td><td>Parent directory</td><td>—</td><td>—</td></tr>{% endif %}
       {% for entry in entries %}
       <tr>
         <td><a href="{{ entry.href }}">{{ entry.name }}</a></td>
         <td>{{ entry.kind }}</td>
+        <td>{{ entry.modified }}</td>
         <td>{{ entry.size }}</td>
       </tr>
       {% endfor %}

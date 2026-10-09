@@ -2,6 +2,7 @@
 """Generate Apache-style static directory indexes for a GitHub Pages tree."""
 
 import argparse
+from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import quote
 
@@ -42,6 +43,9 @@ def main() -> None:
                     "name": child.name + ("/" if is_directory else ""),
                     "href": quote(child.name, safe="@:+,.-_~") + ("/" if is_directory else ""),
                     "kind": "Directory" if is_directory else "File",
+                    "modified": datetime.fromtimestamp(
+                        child.stat().st_mtime, timezone.utc
+                    ).strftime("%Y-%m-%d %H:%M UTC"),
                     "size": "—" if is_directory else display_size(child.stat().st_size),
                 }
             )
