@@ -1,4 +1,5 @@
 SUMMARY = "Jetson system monitor and process viewer"
+PR = "r1"
 HOMEPAGE = "https://github.com/rbonghi/jetson_stats"
 LICENSE = "AGPL-3.0-or-later"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=8763b57f0092c337eb12c354870a324a"

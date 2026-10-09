@@ -1,4 +1,5 @@
 SUMMARY = "NVIDIA TensorRT inference debugging and prototyping toolkit"
+PR = "r1"
 HOMEPAGE = "https://github.com/NVIDIA/TensorRT/tree/release/8.5/tools/Polygraphy"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/Apache-2.0;md5=89aea4e17d99a7cacdbeed46a0096b10"

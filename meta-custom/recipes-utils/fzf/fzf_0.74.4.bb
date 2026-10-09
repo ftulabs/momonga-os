@@ -1,4 +1,5 @@
 SUMMARY = "Command-line fuzzy finder"
+PR = "r1"
 HOMEPAGE = "https://github.com/junegunn/fzf"
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://${WORKDIR}/LICENSE;md5=edd55e9a395baee52799d6fb23fef6e5"

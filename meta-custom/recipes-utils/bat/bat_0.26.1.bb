@@ -1,4 +1,5 @@
 SUMMARY = "A cat clone with syntax highlighting and Git integration"
+PR = "r1"
 HOMEPAGE = "https://github.com/sharkdp/bat"
 LICENSE = "Apache-2.0 & MIT"
 LIC_FILES_CHKSUM = " \

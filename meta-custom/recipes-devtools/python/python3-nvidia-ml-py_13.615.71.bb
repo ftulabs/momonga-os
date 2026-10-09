@@ -1,4 +1,5 @@
 SUMMARY = "Python bindings for the NVIDIA Management Library"
+PR = "r1"
 HOMEPAGE = "https://github.com/gpuopenanalytics/pynvml"
 LICENSE = "BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://pynvml.py;beginline=1;endline=25;md5=0d40c8a4dddaca3ce481c2855e7d5f4d"

@@ -1,4 +1,5 @@
 SUMMARY = "Hyperextensible text editor"
+PR = "r1"
 HOMEPAGE = "https://neovim.io/"
 LICENSE = "Apache-2.0 & Vim"
 LIC_FILES_CHKSUM = "file://${WORKDIR}/LICENSE.txt;md5=05b485c2880cb0b3d7dc27f07456ace1"
