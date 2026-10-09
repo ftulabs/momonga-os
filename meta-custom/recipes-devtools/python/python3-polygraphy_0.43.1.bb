@@ -12,4 +12,9 @@ S = "${WORKDIR}/git/tools/Polygraphy"
 
 inherit setuptools3
 
-RDEPENDS:${PN} += "python3-numpy python3-tensorrt"
+RDEPENDS:${PN} += " \
+    python3-numpy \
+    python3-onnx \
+    python3-onnx-graphsurgeon \
+    python3-tensorrt \
+"
