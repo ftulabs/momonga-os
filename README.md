@@ -295,10 +295,10 @@ The custom recipes in `meta-custom/` are part of this project. The source archiv
 
 ## Extra ARM64 Packages
 
-The `meta-custom` layer provides prebuilt ARM64 packages for Neovim, `bat`, `fzf`, and Node.js with npm. These recipes package official upstream Linux ARM64 release binaries, so they do not compile Neovim, Rust, or V8. It also enables Zsh's dynamic modules, which are required by plugins such as Powerlevel10k and fzf-tab. Build the RPMs and repository index with:
+The extra RPM feed includes Neovim, `bat`, `fzf`, Node.js with npm, Neofetch, Fastfetch, C.UTF-8 (`momonga-locale`), `tegrastats`, and `jtop` (from the `python3-jetson-stats` package). The `neofetch` and Fastfetch packages include the MomongaOS logo. Custom-layer RPMs depend on `momonga-locale`, so C.UTF-8 is installed with them. The Neovim, `bat`, `fzf`, and Node.js recipes package official upstream Linux ARM64 release binaries, so they do not compile Neovim, Rust, or V8. The Zsh recipe enables dynamic modules for plugins such as Powerlevel10k and fzf-tab. Build the optional RPMs and repository index with:
 
 ```sh
-bitbake neovim bat fzf nodejs24 zsh
+bitbake neovim bat fzf nodejs24 zsh gdbm neofetch fastfetch momonga-locale tegra-tools python3-jetson-stats
 bitbake package-index
 ```
 

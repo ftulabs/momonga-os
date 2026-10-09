@@ -1,0 +1,332 @@
+# Momonga RPM feed package inventory
+
+This file records the RPM package outputs in release `momonga-rpm-feed-2026.10.09-2` (290 RPMs), plus later local builds that are not yet published. It is an inventory of package outputs, including debug, development, locale, and source RPMs—not a list of packages installed in the Xavier image.
+
+## Rebuild the feed packages
+
+From the Poky checkout, initialize the package build directory and build these recipes:
+
+```sh
+source ./oe-init-build-env build-packages
+bitbake bash bat diffutils fzf gdbm nano ncurses neovim nodejs24 \
+  neofetch fastfetch momonga-locale ptest-runner python3 python3-distro \
+  python3-jetson-stats python3-numpy python3-nvidia-ml-py python3-onnx \
+  python3-onnx-graphsurgeon python3-polygraphy python3-smbus2 python3-tensorrt \
+  tegra-tools tensorrt-trtexec-prebuilt zsh
+```
+
+BitBake also builds each recipe's dependencies. To refresh repository metadata after signing any new or changed RPMs, run `bitbake package-index`; follow `AGENTS.md` to sign RPMs and metadata and publish a complete feed release.
+
+## Built locally, not yet published
+
+The following main RPMs are present in the local deploy directory; their debug, development, documentation/source companion RPMs may also be present:
+
+| Package | Version-release | Notes |
+| --- | --- | --- |
+| `fastfetch` | 2.69.0-r1 | MomongaOS logo included |
+| `momonga-locale` | 1.0-r0 | C.UTF-8 default and locale dependency |
+| `neofetch` | 7.1.0-r3 | Latest local build; older r1 artifact may remain in deploy |
+| `python3-jetson-stats` | 7.2.0-r0 | Provides `jtop` |
+| `python3-onnx` | 1.16.2-r0 | ONNX Python API |
+| `python3-onnx-graphsurgeon` | 0.5.8-r0 | Built as `noarch`; depends on `python3-onnx` |
+| `python3-tensorrt` | 8.5.2-r0 | Recipe override corrected to deploy in the feed's `armv8a_tegra/` directory; rebuild and verify before release |
+| `tegra-tools-tegrastats` | 35.6.4+20260126234748-r0 | Produced by the `tegra-tools` recipe |
+
+`python3-polygraphy` declares ONNX tools as runtime dependencies; build/sign/index/publish only after all required dependencies and package architectures are ready.
+
+## RPM package outputs
+
+Package names and their exact RPM version-release values, read from each RPM header:
+
+| Package | Version-release |
+| --- | --- |
+| bash | 5.2.21-r0 |
+| bash-bashbug | 5.2.21-r0 |
+| bash-dbg | 5.2.21-r0 |
+| bash-dev | 5.2.21-r0 |
+| bash-doc | 5.2.21-r0 |
+| bash-loadable | 5.2.21-r0 |
+| bash-locale-af | 5.2.21-r0 |
+| bash-locale-bg | 5.2.21-r0 |
+| bash-locale-ca | 5.2.21-r0 |
+| bash-locale-cs | 5.2.21-r0 |
+| bash-locale-da | 5.2.21-r0 |
+| bash-locale-de | 5.2.21-r0 |
+| bash-locale-el | 5.2.21-r0 |
+| bash-locale-en+boldquot | 5.2.21-r0 |
+| bash-locale-en+quot | 5.2.21-r0 |
+| bash-locale-eo | 5.2.21-r0 |
+| bash-locale-es | 5.2.21-r0 |
+| bash-locale-et | 5.2.21-r0 |
+| bash-locale-fi | 5.2.21-r0 |
+| bash-locale-fr | 5.2.21-r0 |
+| bash-locale-ga | 5.2.21-r0 |
+| bash-locale-gl | 5.2.21-r0 |
+| bash-locale-hr | 5.2.21-r0 |
+| bash-locale-hu | 5.2.21-r0 |
+| bash-locale-id | 5.2.21-r0 |
+| bash-locale-it | 5.2.21-r0 |
+| bash-locale-ja | 5.2.21-r0 |
+| bash-locale-ko | 5.2.21-r0 |
+| bash-locale-lt | 5.2.21-r0 |
+| bash-locale-nb | 5.2.21-r0 |
+| bash-locale-nl | 5.2.21-r0 |
+| bash-locale-pl | 5.2.21-r0 |
+| bash-locale-pt | 5.2.21-r0 |
+| bash-locale-pt-br | 5.2.21-r0 |
+| bash-locale-ro | 5.2.21-r0 |
+| bash-locale-ru | 5.2.21-r0 |
+| bash-locale-sk | 5.2.21-r0 |
+| bash-locale-sl | 5.2.21-r0 |
+| bash-locale-sr | 5.2.21-r0 |
+| bash-locale-sv | 5.2.21-r0 |
+| bash-locale-tr | 5.2.21-r0 |
+| bash-locale-uk | 5.2.21-r0 |
+| bash-locale-vi | 5.2.21-r0 |
+| bash-locale-zh-cn | 5.2.21-r0 |
+| bash-locale-zh-tw | 5.2.21-r0 |
+| bash-ptest | 5.2.21-r0 |
+| bash-src | 5.2.21-r0 |
+| bat | 0.26.1-r0 |
+| bat-dbg | 0.26.1-r0 |
+| bat-dev | 0.26.1-r0 |
+| bat-doc | 0.26.1-r0 |
+| diffutils | 3.10-r0 |
+| diffutils-dbg | 3.10-r0 |
+| diffutils-dev | 3.10-r0 |
+| diffutils-doc | 3.10-r0 |
+| diffutils-locale-bg | 3.10-r0 |
+| diffutils-locale-ca | 3.10-r0 |
+| diffutils-locale-cs | 3.10-r0 |
+| diffutils-locale-da | 3.10-r0 |
+| diffutils-locale-de | 3.10-r0 |
+| diffutils-locale-el | 3.10-r0 |
+| diffutils-locale-eo | 3.10-r0 |
+| diffutils-locale-es | 3.10-r0 |
+| diffutils-locale-fi | 3.10-r0 |
+| diffutils-locale-fr | 3.10-r0 |
+| diffutils-locale-ga | 3.10-r0 |
+| diffutils-locale-gl | 3.10-r0 |
+| diffutils-locale-he | 3.10-r0 |
+| diffutils-locale-hr | 3.10-r0 |
+| diffutils-locale-hu | 3.10-r0 |
+| diffutils-locale-id | 3.10-r0 |
+| diffutils-locale-it | 3.10-r0 |
+| diffutils-locale-ja | 3.10-r0 |
+| diffutils-locale-ka | 3.10-r0 |
+| diffutils-locale-ko | 3.10-r0 |
+| diffutils-locale-lv | 3.10-r0 |
+| diffutils-locale-ms | 3.10-r0 |
+| diffutils-locale-nb | 3.10-r0 |
+| diffutils-locale-nl | 3.10-r0 |
+| diffutils-locale-pl | 3.10-r0 |
+| diffutils-locale-pt | 3.10-r0 |
+| diffutils-locale-pt-br | 3.10-r0 |
+| diffutils-locale-ro | 3.10-r0 |
+| diffutils-locale-ru | 3.10-r0 |
+| diffutils-locale-sr | 3.10-r0 |
+| diffutils-locale-sv | 3.10-r0 |
+| diffutils-locale-tr | 3.10-r0 |
+| diffutils-locale-uk | 3.10-r0 |
+| diffutils-locale-vi | 3.10-r0 |
+| diffutils-locale-zh-cn | 3.10-r0 |
+| diffutils-locale-zh-tw | 3.10-r0 |
+| diffutils-ptest | 3.10-r0 |
+| diffutils-src | 3.10-r0 |
+| fzf | 0.74.4-r0 |
+| fzf-dbg | 0.74.4-r0 |
+| fzf-dev | 0.74.4-r0 |
+| libform5 | 6.4-r0 |
+| libformw5 | 6.4-r0 |
+| libgdbm6 | 1.23-r0 |
+| libgdbm-bin | 1.23-r0 |
+| libgdbm-compat4 | 1.23-r0 |
+| libgdbm-dbg | 1.23-r0 |
+| libgdbm-dev | 1.23-r0 |
+| libgdbm-doc | 1.23-r0 |
+| libgdbm-locale-da | 1.23-r0 |
+| libgdbm-locale-de | 1.23-r0 |
+| libgdbm-locale-eo | 1.23-r0 |
+| libgdbm-locale-es | 1.23-r0 |
+| libgdbm-locale-fi | 1.23-r0 |
+| libgdbm-locale-fr | 1.23-r0 |
+| libgdbm-locale-ja | 1.23-r0 |
+| libgdbm-locale-pl | 1.23-r0 |
+| libgdbm-locale-pt-br | 1.23-r0 |
+| libgdbm-locale-ru | 1.23-r0 |
+| libgdbm-locale-sr | 1.23-r0 |
+| libgdbm-locale-sv | 1.23-r0 |
+| libgdbm-locale-uk | 1.23-r0 |
+| libgdbm-locale-vi | 1.23-r0 |
+| libgdbm-ptest | 1.23-r0 |
+| libgdbm-src | 1.23-r0 |
+| libmenu5 | 6.4-r0 |
+| libmenuw5 | 6.4-r0 |
+| libncurses5 | 6.4-r0 |
+| libncursesw5 | 6.4-r0 |
+| libpanel5 | 6.4-r0 |
+| libpanelw5 | 6.4-r0 |
+| libpython3.12-1.0 | 3.12.14-r0 |
+| libpython3.12-staticdev | 3.12.14-r0 |
+| libtic5 | 6.4-r0 |
+| libticw5 | 6.4-r0 |
+| libtinfo5 | 6.4-r0 |
+| nano | 7.2-r0 |
+| nano-dbg | 7.2-r0 |
+| nano-dev | 7.2-r0 |
+| nano-doc | 7.2-r0 |
+| nano-locale-bg | 7.2-r0 |
+| nano-locale-ca | 7.2-r0 |
+| nano-locale-cs | 7.2-r0 |
+| nano-locale-da | 7.2-r0 |
+| nano-locale-de | 7.2-r0 |
+| nano-locale-eo | 7.2-r0 |
+| nano-locale-es | 7.2-r0 |
+| nano-locale-eu | 7.2-r0 |
+| nano-locale-fi | 7.2-r0 |
+| nano-locale-fr | 7.2-r0 |
+| nano-locale-ga | 7.2-r0 |
+| nano-locale-gl | 7.2-r0 |
+| nano-locale-hr | 7.2-r0 |
+| nano-locale-hu | 7.2-r0 |
+| nano-locale-id | 7.2-r0 |
+| nano-locale-is | 7.2-r0 |
+| nano-locale-it | 7.2-r0 |
+| nano-locale-ja | 7.2-r0 |
+| nano-locale-ka | 7.2-r0 |
+| nano-locale-ko | 7.2-r0 |
+| nano-locale-ms | 7.2-r0 |
+| nano-locale-nb | 7.2-r0 |
+| nano-locale-nl | 7.2-r0 |
+| nano-locale-pl | 7.2-r0 |
+| nano-locale-pt | 7.2-r0 |
+| nano-locale-pt-br | 7.2-r0 |
+| nano-locale-ro | 7.2-r0 |
+| nano-locale-ru | 7.2-r0 |
+| nano-locale-sk | 7.2-r0 |
+| nano-locale-sl | 7.2-r0 |
+| nano-locale-sq | 7.2-r0 |
+| nano-locale-sr | 7.2-r0 |
+| nano-locale-sv | 7.2-r0 |
+| nano-locale-tr | 7.2-r0 |
+| nano-locale-uk | 7.2-r0 |
+| nano-locale-vi | 7.2-r0 |
+| nano-locale-zh-cn | 7.2-r0 |
+| nano-locale-zh-tw | 7.2-r0 |
+| nano-src | 7.2-r0 |
+| ncurses | 6.4-r0 |
+| ncurses-dbg | 6.4-r0 |
+| ncurses-dev | 6.4-r0 |
+| ncurses-doc | 6.4-r0 |
+| ncurses-src | 6.4-r0 |
+| ncurses-staticdev | 6.4-r0 |
+| ncurses-terminfo | 6.4-r0 |
+| ncurses-terminfo-base | 6.4-r0 |
+| ncurses-tools | 6.4-r0 |
+| neovim | 0.12.5-r0 |
+| neovim-dbg | 0.12.5-r0 |
+| neovim-dev | 0.12.5-r0 |
+| neovim-doc | 0.12.5-r0 |
+| nodejs24 | 24.21.0-r0 |
+| nodejs24-dbg | 24.21.0-r0 |
+| nodejs24-dev | 24.21.0-r0 |
+| nodejs24-doc | 24.21.0-r0 |
+| ptest-runner | 2.5.1-r0 |
+| ptest-runner-dbg | 2.5.1-r0 |
+| ptest-runner-dev | 2.5.1-r0 |
+| ptest-runner-src | 2.5.1-r0 |
+| python3-2to3 | 3.12.14-r0 |
+| python3-asyncio | 3.12.14-r0 |
+| python3-audio | 3.12.14-r0 |
+| python3-cgitb | 3.12.14-r0 |
+| python3-codecs | 3.12.14-r0 |
+| python3-compile | 3.12.14-r0 |
+| python3-compression | 3.12.14-r0 |
+| python3-core | 3.12.14-r0 |
+| python3-crypt | 3.12.14-r0 |
+| python3-ctypes | 3.12.14-r0 |
+| python3-curses | 3.12.14-r0 |
+| python3-datetime | 3.12.14-r0 |
+| python3-db | 3.12.14-r0 |
+| python3-dbg | 3.12.14-r0 |
+| python3-debugger | 3.12.14-r0 |
+| python3-dev | 3.12.14-r0 |
+| python3-difflib | 3.12.14-r0 |
+| python3-distro | 1.9.0-r0 |
+| python3-distro-dbg | 1.9.0-r0 |
+| python3-distro-dev | 1.9.0-r0 |
+| python3-doc | 3.12.14-r0 |
+| python3-doctest | 3.12.14-r0 |
+| python3-email | 3.12.14-r0 |
+| python3-ensurepip | 3.12.14-r0 |
+| python3-fcntl | 3.12.14-r0 |
+| python3-gdbm | 3.12.14-r0 |
+| python3-html | 3.12.14-r0 |
+| python3-idle | 3.12.14-r0 |
+| python3-image | 3.12.14-r0 |
+| python3-io | 3.12.14-r0 |
+| python3-jetson-stats | 7.2.0-r0 |
+| python3-jetson-stats-dbg | 7.2.0-r0 |
+| python3-jetson-stats-dev | 7.2.0-r0 |
+| python3-json | 3.12.14-r0 |
+| python3-logging | 3.12.14-r0 |
+| python3-mailbox | 3.12.14-r0 |
+| python3-math | 3.12.14-r0 |
+| python3-mime | 3.12.14-r0 |
+| python3-misc | 3.12.14-r0 |
+| python3-mmap | 3.12.14-r0 |
+| python3-modules | 3.12.14-r0 |
+| python3-multiprocessing | 3.12.14-r0 |
+| python3-netclient | 3.12.14-r0 |
+| python3-netserver | 3.12.14-r0 |
+| python3-numbers | 3.12.14-r0 |
+| python3-numpy | 1.26.4-r0 |
+| python3-numpy-dbg | 1.26.4-r0 |
+| python3-numpy-dev | 1.26.4-r0 |
+| python3-numpy-ptest | 1.26.4-r0 |
+| python3-numpy-src | 1.26.4-r0 |
+| python3-numpy-staticdev | 1.26.4-r0 |
+| python3-nvidia-ml-py | 13.615.71-r0 |
+| python3-nvidia-ml-py-dbg | 13.615.71-r0 |
+| python3-nvidia-ml-py-dev | 13.615.71-r0 |
+| python3-pickle | 3.12.14-r0 |
+| python3-pkgutil | 3.12.14-r0 |
+| python3-plistlib | 3.12.14-r0 |
+| python3-polygraphy | 0.43.1-r0 |
+| python3-polygraphy-dbg | 0.43.1-r0 |
+| python3-polygraphy-dev | 0.43.1-r0 |
+| python3-pprint | 3.12.14-r0 |
+| python3-profile | 3.12.14-r0 |
+| python3-ptest | 3.12.14-r0 |
+| python3-pydoc | 3.12.14-r0 |
+| python3-resource | 3.12.14-r0 |
+| python3-shell | 3.12.14-r0 |
+| python3-smbus2 | 0.4.3-r0 |
+| python3-smbus2-dbg | 0.4.3-r0 |
+| python3-smbus2-dev | 0.4.3-r0 |
+| python3-sqlite3 | 3.12.14-r0 |
+| python3-src | 3.12.14-r0 |
+| python3-statistics | 3.12.14-r0 |
+| python3-stringold | 3.12.14-r0 |
+| python3-syslog | 3.12.14-r0 |
+| python3-terminal | 3.12.14-r0 |
+| python3-tests | 3.12.14-r0 |
+| python3-threading | 3.12.14-r0 |
+| python3-tkinter | 3.12.14-r0 |
+| python3-tomllib | 3.12.14-r0 |
+| python3-turtle | 3.12.14-r0 |
+| python3-unittest | 3.12.14-r0 |
+| python3-unixadmin | 3.12.14-r0 |
+| python3-venv | 3.12.14-r0 |
+| python3-xml | 3.12.14-r0 |
+| python3-xmlrpc | 3.12.14-r0 |
+| python3-zipapp | 3.12.14-r0 |
+| python3-zoneinfo | 3.12.14-r0 |
+| tensorrt-trtexec-prebuilt | 8.5.2+1-r0 |
+| tensorrt-trtexec-prebuilt-dbg | 8.5.2+1-r0 |
+| tensorrt-trtexec-prebuilt-dev | 8.5.2+1-r0 |
+| zsh | 5.8-r0.2 |
+| zsh-dbg | 5.8-r0.2 |
+| zsh-dev | 5.8-r0.2 |
+| zsh-doc | 5.8-r0.2 |
+| zsh-src | 5.8-r0.2 |

@@ -5,8 +5,9 @@ This section is the maintainer runbook for the extra-package RPM feed. The feed 
 ## Package scope and paths
 
 - The custom layer is `meta-custom/`.
-- Current package targets include Neovim, `bat`, `fzf`, `nodejs24`, Zsh, and GDBM. `nodejs24` packages the upstream Node.js 24 ARM64 binary and npm together. `fzf` packages its upstream ARM64 binary and MIT license; it does not currently package shell bindings or completions.
+- Current package targets include Neovim, `bat`, `fzf`, `nodejs24`, Zsh, GDBM, Neofetch, Fastfetch, `momonga-locale`, `tegra-tools` (which outputs the `tegra-tools-tegrastats` package), and `python3-jetson-stats` (which provides `jtop`). Custom-layer RPMs depend on `momonga-locale`, which installs C.UTF-8 and sets it as the default locale. `nodejs24` packages the upstream Node.js 24 ARM64 binary and npm together. `fzf` packages its upstream ARM64 binary and MIT license; it does not currently package shell bindings or completions.
 - The build/repository directory is `build-packages/tmp/deploy/rpm/armv8a_tegra/`. It contains the RPMs and generated `repodata/`.
+- Keep `MOMONGA-RPM-FEED-PACKAGES.md` up to date whenever RPMs are built, added, removed, or published. Record the recipe targets and actual RPM package names/EVRs, and clearly distinguish local/unpublished builds from the contents of the latest published release; do not label a recipe as built until its RPM output exists.
 - The DNF base URL is `https://kani.ftds.online/rpm/momonga/aarch64/`. The URL's `aarch64` is a public repository path; RPM filenames use Yocto's `armv8a_tegra` package architecture.
 - The flash image's package selection is separate. `config/local.conf` contains `CORE_IMAGE_EXTRA_INSTALL`; the resolved installed-package list is in the image `.manifest` under `build/tmp/deploy/images/jetson-agx-xavier-devkit/` after a full image build.
 
@@ -16,7 +17,7 @@ Run from the Poky checkout:
 
 ```sh
 source ./oe-init-build-env build-packages
-bitbake neovim bat fzf nodejs24 zsh gdbm
+bitbake neovim bat fzf nodejs24 zsh gdbm neofetch fastfetch momonga-locale tegra-tools python3-jetson-stats
 ```
 
 For a single package, run `bitbake <recipe>` with its recipe name, for example `bitbake fzf`. BitBake builds that recipe and its task/build dependencies. It does not build a flash image. `bitbake package-index` indexes RPMs already in the deploy directory; it does not build recipes.
