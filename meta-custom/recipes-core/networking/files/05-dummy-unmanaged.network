@@ -1,0 +1,7 @@
+# The kernel creates dummy0 (CONFIG_DUMMY=y). Without this, poky's
+# 80-wired.network tries DHCP on it forever and network-online never settles.
+[Match]
+Kind=dummy
+
+[Link]
+Unmanaged=yes

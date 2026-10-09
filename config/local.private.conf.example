@@ -3,3 +3,11 @@
 # Install one SSH public key for root.
 CORE_IMAGE_EXTRA_INSTALL:append = " ssh-keys"
 SSH_AUTHORIZED_KEY = "ssh-ed25519 AAAA... user@host"
+
+# Optional: console-only root password for local recovery (SSH stays key-only).
+# Generate the hash with: openssl passwd -6
+#MOMONGA_ROOT_PASSWORD_HASH = "$6$..."
+
+# SSH keys for the login users in MOMONGA_USERS (config/local.conf), one
+# variable per user; separate several keys with a literal \n.
+#MOMONGA_USER_KEY_nhansp = "ssh-ed25519 AAAA... user@host"

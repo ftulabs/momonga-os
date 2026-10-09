@@ -1,0 +1,6 @@
+FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
+
+SRC_URI += " \
+    file://virt-host.cfg \
+    file://0001-nvidia-galen-p2888-0001-p2822-0000-poll-sd-card.patch \
+"

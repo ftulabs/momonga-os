@@ -1,0 +1,48 @@
+# Flashing @NAME@
+
+Built from momonga-os commit `@REV@`.
+
+Flashing erases the Xavier internal eMMC (root filesystem, users, `/etc`). The SD card
+(`/mnt/sdcard`: Docker images and data) is not touched.
+
+## Files
+
+| File | Use |
+| --- | --- |
+| `@NAME@.tegraflash.tar.gz` | Full flash bundle (bootloader, A/B partition layout, rootfs) |
+| `*tegra-bl.cap`, `*tegra-kernel.cap` | UEFI capsules for later remote bootloader/kernel updates |
+| `@NAME@.manifest` | Installed packages |
+| `SHA256SUMS` | Checksums; verify with `sha256sum -c SHA256SUMS` |
+
+## Host
+
+An x86_64 Linux host with a USB-C cable to the Xavier, `python3`, and `sudo`.
+
+## Steps
+
+1. `sha256sum -c SHA256SUMS`
+2. Extract: `mkdir -p /tmp/xavier-flash && tar -xzf @NAME@.tegraflash.tar.gz -C /tmp/xavier-flash`
+3. Force Recovery Mode: power off the Xavier. Connect the baseboard Type-C port `J512` to the
+   host. Hold `FORCE RECOVERY`, press and release `POWER`, then release `FORCE RECOVERY`.
+4. Check: `lsusb | grep '0955:7019'`
+5. Flash: `cd /tmp/xavier-flash && sudo ./doflash.sh`. Do not disconnect USB or power. The Xavier
+   restarts when flashing completes.
+
+## After the first boot (before leaving the board)
+
+1. `ssh root@<eth0 address>` works with the key baked into the image.
+2. `tailscale up` and complete the login; confirm ssh over the tailnet.
+3. SD card: `findmnt /mnt/sdcard`; Docker: `docker info | grep -E "Root Dir|Default Runtime"`
+   shows `/mnt/sdcard/docker` and `nvidia`; start the existing containers and check they are
+   healthy.
+4. Recovery net: `sysctl kernel.panic` is `10`; `systemctl show -p RuntimeWatchdogUSec` is `30s`.
+5. A/B: `nvbootctrl dump-slots-info` and `nvbootctrl -t rootfs dump-slots-info` list two slots.
+6. KVM guests: `ls -l /dev/kvm /dev/vhost-vsock /dev/vhost-net /dev/dri`
+   (`modprobe vhost_vsock vhost_net` if the vhost nodes are missing).
+7. Create user accounts (see README "First Boot Users").
+
+## If the board does not come back
+
+Use the debug micro-USB serial console (115200 8N1) to watch UEFI and the kernel. Re-flash with
+the steps above. A backup of the previous Ubuntu `/boot`, `/etc`, package list, and container
+definitions is on `minh-sager:/mnt/android/unreal-backups/`.

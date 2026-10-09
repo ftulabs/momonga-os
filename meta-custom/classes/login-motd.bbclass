@@ -8,9 +8,9 @@ Banner /etc/issue.net
 PrintMotd no
 EOF
     cat >> "${IMAGE_ROOTFS}${sysconfdir}/zprofile" <<'EOF'
-# zsh does not read /etc/profile, so invoke the login status report here too.
-if [ -n "${SSH_CONNECTION:-}" ] && [ -t 1 ]; then
-    /usr/sbin/login-motd
-fi
+# zsh does not read /etc/profile; pick up its profile.d snippets, which
+# include the login status report.
+for i in /etc/profile.d/*.sh(N); do emulate sh -c ". $i"; done
+unset i
 EOF
 }

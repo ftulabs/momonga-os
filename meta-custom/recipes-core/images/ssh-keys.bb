@@ -1,6 +1,7 @@
 SUMMARY = "Preload authorized SSH keys for root"
 LICENSE = "CLOSED"
 
+# One key, or several separated by a literal \n.
 SSH_AUTHORIZED_KEY ?= ""
 
 do_install() {
@@ -8,7 +9,7 @@ do_install() {
         bbfatal "Set SSH_AUTHORIZED_KEY before you install ssh-keys"
     fi
     install -d ${D}${ROOT_HOME}/.ssh
-    printf '%s\n' "${SSH_AUTHORIZED_KEY}" > ${D}${ROOT_HOME}/.ssh/authorized_keys
+    printf '%b\n' "${SSH_AUTHORIZED_KEY}" > ${D}${ROOT_HOME}/.ssh/authorized_keys
     chmod 0600 ${D}${ROOT_HOME}/.ssh/authorized_keys
 }
 

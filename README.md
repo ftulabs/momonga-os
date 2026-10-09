@@ -159,6 +159,58 @@ The script programs the boot firmware and the image to the Xavier internal eMMC.
 
 This procedure is for an unfused development kit. A device with Secure Boot fuses needs its signing keys and the matching `doflash.sh` signing options.
 
+## Redundant Boot (A/B)
+
+The image uses the redundant flash layout (`USE_REDUNDANT_FLASH_LAYOUT_DEFAULT = "1"`):
+
+- Bootloader A/B slots, updated through UEFI capsules (`tegra-uefi-capsules` builds
+  `jetson-agx-xavier-devkit-tegra-bl.cap`).
+- Root filesystem slots `APP` and `APP_b`, 14 GiB each. The UEFI boot chain retries a slot that
+  does not boot and falls back to the other one. `nv_update_verifier.service` marks a boot as
+  successful.
+- `nvbootctrl` (package `tegra-redundant-boot`) shows and selects slots:
+  `nvbootctrl dump-slots-info`, `nvbootctrl -t rootfs dump-slots-info`.
+
+Rootfs update without physical access:
+
+1. Write the new `core-image-minimal-jetson-agx-xavier-devkit.rootfs.ext4` to the inactive slot
+   partition (`/dev/disk/by-partlabel/APP_b` when slot A is active, `APP` otherwise).
+2. Select it: `nvbootctrl -t rootfs set-active-boot-slot <slot>`, then reboot.
+3. If the new slot fails to boot, the boot chain returns to the previous slot.
+
+Bootloader update: copy the capsule to `/boot/efi/EFI/UpdateCapsule/TEGRA_BL.Cap` on the ESP,
+set the UEFI `OsIndications` capsule bit, and reboot (see the meta-tegra documentation for
+`tegra-uefi-capsules`).
+
+## Package Management (dnf)
+
+The image includes `dnf` and the RPM database (`package-management` image feature). Packages
+come from an RPM feed built from the same build directory:
+
+1. Publish: `scripts/momonga-publish-feed build <rclone-remote:path>` runs
+   `bitbake package-index` and mirrors `build/tmp/deploy/rpm`.
+2. Point the image at the feed's public base URL in `config/local.private.conf`:
+   `PACKAGE_FEED_URIS = "https://<feed-host>/<path>"`. The image then contains repository
+   files for each package architecture.
+3. On the device: `dnf makecache && dnf install <package>`.
+
+`PRSERV_HOST = "localhost:0"` keeps package revisions increasing across rebuilds. Keep the
+build directory's `cache/prserv.sqlite3` with the sstate cache so revisions stay monotonic.
+
+## Host Integration
+
+- Kernel: `vsock`, `vhost_vsock`, and `vhost_net` modules for KVM guests
+  (`meta-custom/recipes-kernel/linux/files/virt-host.cfg`).
+- Device tree: SD card slot polled instead of using its card-detect GPIO, matching the board's
+  previous L4T installation.
+- Recovery: `kernel.panic = 10` and a 30 s systemd hardware watchdog (`momonga-recovery`).
+- GPU: Vulkan, EGL/GLES, and the GBM backend stay installed without a display server, so the
+  NVIDIA container runtime can pass the Tegra GPU userspace into containers. `tegra-udrm` provides
+  `/dev/dri`.
+- Site: SD card (label `xavier-sd`) at `/mnt/sdcard` and read-only NFS model share
+  (`xavier-site-config`); Docker data root on the SD card, NVIDIA default runtime, and local
+  registry in `/etc/docker/daemon.json` (`nvidia-docker` bbappend).
+
 ## Device Access
 
 The image enables the OpenSSH server. The tracked project does not contain SSH keys or Tailscale auth keys.
@@ -167,12 +219,15 @@ The image enables the OpenSSH server. The tracked project does not contain SSH k
 the image reports load, memory, root filesystem usage, and Tegra CPU/GPU/thermal data
 when the corresponding kernel interfaces are available.
 
-To add one SSH public key after setup, add these lines to the local `build/conf/local.conf` file before the build:
+To add SSH public keys for root after setup, add these lines to the local `build/conf/local.conf` file before the build. Separate several keys with a literal `\n`:
 
 ```bitbake
 CORE_IMAGE_EXTRA_INSTALL:append = " ssh-keys"
-SSH_AUTHORIZED_KEY = "ssh-ed25519 AAAA... user@host"
+SSH_AUTHORIZED_KEY = "ssh-ed25519 AAAA... user@host\nssh-ed25519 AAAA... other@host"
 ```
+
+Root can log in over SSH with these keys only (`PermitRootLogin prohibit-password`); password
+logins over SSH are refused.
 
 Do not commit that local configuration file.
 
@@ -186,7 +241,9 @@ The image uses the `Asia/Ho_Chi_Minh` timezone. It starts `systemd-timesyncd` at
 
 `/etc/passwd` is present in the final image. The image sets the root login shell to `/bin/bash`.
 
-You can create and manage users after flashing. Sign in as root on the local console or through SSH with the key that you configured. Then create a user and set its password:
+The image creates the login users listed in `MOMONGA_USERS` in `config/local.conf` (`name:uid:shell`). They belong to `wheel`, which has passwordless `sudo`, and to `docker`, `kvm`, `video` and `render`. Set each user's SSH key as `MOMONGA_USER_KEY_<name>` in `config/local.private.conf`; the image installs it at `/etc/ssh/authorized_keys/<name>`, which `sshd` reads in addition to `~/.ssh/authorized_keys`. These users have no password. `/home` is a bind mount of `/mnt/sdcard/home`, so home directories survive a reflash.
+
+You can also create and manage users after flashing. Sign in as root on the local console or through SSH with the key that you configured. Then create a user and set its password:
 
 ```sh
 useradd --create-home --shell /bin/bash xavier
@@ -199,7 +256,7 @@ Use `usermod` to change groups. Add an administrator to `wheel` and, when needed
 usermod --append --groups wheel,docker xavier
 ```
 
-The image installs `sudo`. Members of `wheel` can run administrative commands with `sudo`, for example `sudo -i`. Use `su -` when you need a root login shell. The image uses SSH key authentication for root. Configure a key in `config/local.private.conf` before you build. The key installs at `/root/.ssh/authorized_keys`.
+The image installs `sudo`. Members of `wheel` can run administrative commands with `sudo`, for example `sudo -i`. Use `su -` when you need a root login shell. The image uses SSH key authentication for root. Configure a key in `config/local.private.conf` before you build. The key installs at `/root/.ssh/authorized_keys`. Root has no password unless you set `MOMONGA_ROOT_PASSWORD_HASH` (from `openssl passwd -6`) in `config/local.private.conf`; that password works on the local console only, because SSH accepts keys only.
 
 ## Reproducibility
 
@@ -207,7 +264,7 @@ The setup script pins these external layers:
 
 | Layer | Revision |
 | --- | --- |
-| meta-openembedded | `b5874ea07d69919d9b40d59f2c2f0bbd24bc3259` |
+| meta-openembedded | `0f00f8b9a21950640da8c5707343e5540133f86e` |
 | meta-virtualization | `e066aa71b00d8ef5121fcab3a7ac813058cda09c` |
 | meta-tegra | `0c507bfe8d64a0e113beeff8f45e7fe0dfb5bc80` |
 | meta-tailscale | `c70a30954839eef1923627e3a2f056692611f789` |

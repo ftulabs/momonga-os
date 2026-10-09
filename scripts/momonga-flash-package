@@ -1,0 +1,38 @@
+#!/bin/sh
+# Collect a flashable release from a build directory: tegraflash bundle, UEFI
+# capsules for later A/B bootloader updates, image manifest, flashing guide,
+# and checksums. Optionally upload it with rclone.
+# Usage: scripts/momonga-flash-package <build-dir> <out-dir> [rclone-remote:path]
+set -eu
+
+build_dir=${1:?build directory}
+out_dir=${2:?output directory}
+remote=${3:-}
+image=${IMAGE:-core-image-minimal}
+machine=jetson-agx-xavier-devkit
+project_root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+deploy="$build_dir/tmp/deploy/images/$machine"
+bundle="$deploy/$image-$machine.rootfs.tegraflash.tar.gz"
+
+[ -e "$bundle" ] || { printf '%s\n' "missing $bundle" >&2; exit 1; }
+stamp=$(basename "$(readlink -f "$bundle")" | sed -n 's/.*rootfs-\([0-9]*\)\.tegraflash.*/\1/p')
+rev=$(git -C "$project_root" rev-parse --short HEAD)
+name="momonga-$machine-$rev-$stamp"
+pkg="$out_dir/$name"
+mkdir -p "$pkg"
+
+cp -L "$bundle" "$pkg/$name.tegraflash.tar.gz"
+cp -L "$deploy/$image-$machine.rootfs.manifest" "$pkg/$name.manifest"
+for cap in "$deploy/$machine-tegra-bl.cap" "$deploy/$machine-tegra-kernel.cap"; do
+    [ -e "$cap" ] && cp -L "$cap" "$pkg/"
+done
+sed -e "s|@NAME@|$name|g" -e "s|@REV@|$(git -C "$project_root" rev-parse HEAD)|g" \
+    "$project_root/config/FLASHING.md.in" > "$pkg/FLASHING.md"
+(cd "$pkg" && sha256sum -- * > SHA256SUMS)
+printf '%s\n' "Package: $pkg"
+
+if [ -n "$remote" ]; then
+    rclone copy --checksum "$pkg" "$remote/$name"
+    rclone check --one-way "$pkg" "$remote/$name"
+    printf '%s\n' "Uploaded: $remote/$name"
+fi
