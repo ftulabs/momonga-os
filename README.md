@@ -298,7 +298,7 @@ The custom recipes in `meta-custom/` are part of this project. The source archiv
 The extra RPM feed includes Neovim, `bat`, `fzf`, Node.js with npm, Neofetch, Fastfetch, C.UTF-8 (`momonga-locale`), ONNX, ONNX GraphSurgeon, Polygraphy, TensorRT Python bindings, `tegrastats`, and `jtop` (from `python3-jetson-stats`). Neofetch and Fastfetch include the MomongaOS logo. Custom-layer RPMs depend on `momonga-locale`, so C.UTF-8 is installed with them. The Neovim, `bat`, `fzf`, and Node.js recipes package official upstream Linux ARM64 release binaries, so they do not compile Neovim, Rust, or V8. The Zsh recipe enables dynamic modules for plugins such as Powerlevel10k and fzf-tab. Build the optional RPMs with:
 
 ```sh
-bitbake bash bat diffutils fzf gdbm nano ncurses neovim nodejs24 \
+bitbake bash bat diffutils fzf gdbm glibc-locale nano ncurses neovim nodejs24 \
   neofetch fastfetch momonga-locale ptest-runner python3 python3-distro \
   python3-jetson-stats python3-numpy python3-nvidia-ml-py python3-onnx \
   python3-onnx-graphsurgeon python3-polygraphy python3-smbus2 python3-tensorrt \
