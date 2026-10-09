@@ -26,6 +26,8 @@ uptime=$(awk -v seconds="${uptime_seconds:-0}" 'BEGIN {
 
 distribution=$(awk -F= '$1 == "PRETTY_NAME" { gsub(/^"|"$/, "", $2); print $2; exit }' /etc/os-release 2>/dev/null)
 [ -n "$distribution" ] || distribution="Linux $(uname -m)"
+build_commit=$(read_first /etc/momonga-build-commit)
+[ -n "$build_commit" ] && distribution="${distribution}-$(printf '%.6s' "$build_commit")"
 architecture=$(uname -m 2>/dev/null || printf 'unknown')
 kernel=$(uname -sr 2>/dev/null || printf 'unknown')
 cpu=$(awk -F: '/^(model name|Hardware)[[:space:]]*:/ { sub(/^[[:space:]]+/, "", $2); print $2; exit }' /proc/cpuinfo 2>/dev/null)
@@ -79,12 +81,25 @@ for version_file in /usr/local/cuda/version.json /usr/local/cuda/version.txt; do
     fi
 done
 if [ -z "$cuda" ] || [ "$cuda" = "unavailable" ]; then
+    cuda=
     nvcc=$(command -v nvcc 2>/dev/null || [ ! -x /usr/local/cuda/bin/nvcc ] || printf '%s' /usr/local/cuda/bin/nvcc)
     if [ -n "$nvcc" ]; then
         cuda=$($nvcc --version 2>/dev/null | sed -nE 's/.*release ([0-9.]+).*/\1/p' | sed -n '1p')
     fi
-    [ -n "$cuda" ] || cuda="unavailable"
+    if [ -z "$cuda" ]; then
+        cuda_link=$(readlink -f /usr/local/cuda 2>/dev/null)
+        case ${cuda_link##*/} in
+            cuda-*) cuda=${cuda_link##*/cuda-} ;;
+        esac
+    fi
 fi
+cuda_versions=$(for path in /usr/local/cuda-*; do
+    [ -d "$path" ] && printf '%s\n' "${path##*/cuda-}"
+done | sort -Vu)
+if [ -n "$cuda_versions" ]; then
+    cuda=$(printf '%s\n' "$cuda_versions" | paste -sd ', ' -)
+fi
+[ -n "$cuda" ] || cuda="unavailable"
 
 gpu_load_file=
 for path in /sys/devices/gpu.0/load /sys/class/devfreq/*gpu*/load; do
@@ -92,10 +107,19 @@ for path in /sys/devices/gpu.0/load /sys/class/devfreq/*gpu*/load; do
 done
 gpu_load=$(awk 'NR == 1 { printf "%.1f%%", $1 / 10 }' "$gpu_load_file" 2>/dev/null)
 [ -n "$gpu_load" ] || gpu_load="unavailable"
-gpu_freq_file=${gpu_load_file%/load}/cur_freq
+gpu_freq_file=
+for path in /sys/class/devfreq/*gv11b/cur_freq \
+            /sys/class/devfreq/*gpu*/cur_freq \
+            /sys/devices/gpu.0/devfreq/*/cur_freq \
+            /sys/devices/gpu.0/cur_freq; do
+    if [ -r "$path" ]; then gpu_freq_file=$path; break; fi
+done
 gpu_freq=$(awk 'NR == 1 { printf "%.0f MHz", $1 / 1000000 }' "$gpu_freq_file" 2>/dev/null)
 gpu_name=$(read_first /sys/devices/gpu.0/devfreq/*/name)
 [ -n "$gpu_name" ] || gpu_name="NVIDIA integrated GPU"
+case $gpu_name in
+    *gv11b*) gpu_name="NVIDIA Volta GPU (GV11B)" ;;
+esac
 
 printf '\n==========[ System Information ]===============================================\n'
 printf '      Hostname = %s\n' "$(hostname 2>/dev/null || printf 'unknown')"

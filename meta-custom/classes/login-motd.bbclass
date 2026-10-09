@@ -14,3 +14,12 @@ for i in /etc/profile.d/*.sh(N); do emulate sh -c ". $i"; done
 unset i
 EOF
 }
+
+MOMONGA_BUILD_COMMIT ?= "${@bb.process.run('git rev-parse --verify HEAD', cwd=d.getVar('MOMONGA_ROOT'))[0].strip()}"
+
+record_momonga_build_commit () {
+    install -d "${IMAGE_ROOTFS}${sysconfdir}"
+    printf '%s\n' "${MOMONGA_BUILD_COMMIT}" > "${IMAGE_ROOTFS}${sysconfdir}/momonga-build-commit"
+}
+
+ROOTFS_POSTPROCESS_COMMAND:append = " record_momonga_build_commit; "
