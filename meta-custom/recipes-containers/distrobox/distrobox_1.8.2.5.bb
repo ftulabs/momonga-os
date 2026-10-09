@@ -5,7 +5,7 @@ system config selects the docker backend and gives box users their host \
 groups."
 HOMEPAGE = "https://github.com/89luca89/distrobox"
 LICENSE = "GPL-3.0-only"
-LIC_FILES_CHKSUM = "file://COPYING.md;md5=b8925bd214abfe93f6f34e5f6b721ae7"
+LIC_FILES_CHKSUM = "file://COPYING.md;md5=3dff7cdfeebf1828a9fa0b8ea992beaa"
 
 SRC_URI = "git://github.com/89luca89/distrobox.git;protocol=https;branch=main \
            file://distrobox.conf \
