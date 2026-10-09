@@ -224,9 +224,11 @@ build directory's `cache/prserv.sqlite3` with the sstate cache so revisions stay
 - GPU: Vulkan, EGL/GLES, and the GBM backend stay installed without a display server, so the
   NVIDIA container runtime can pass the Tegra GPU userspace into containers. `tegra-udrm` provides
   `/dev/dri`.
-- Site: SD card (label `xavier-sd`) at `/mnt/sdcard` and read-only NFS model share
+- Site: SD card (label `xavier-sd`) at `/mnt/sdcard` and read-only NFS model share, the
+  Momonga extra package feed for dnf, and the CUDA 11.4 toolkit on `PATH`
   (`xavier-site-config`); Docker data root on the SD card, NVIDIA default runtime, and local
   registry in `/etc/docker/daemon.json` (`nvidia-docker` bbappend).
+- SSH: key-only for every user (`PasswordAuthentication no`, `openssh` bbappend).
 
 ## Device Access
 
@@ -301,7 +303,7 @@ The Node.js and Neovim binaries require glibc 2.28 and 2.34 or newer, respective
 
 ARM64 RPM feeds are published as GitHub Releases named `momonga-rpm-feed-*`. A GitHub Actions workflow deploys each release feed to GitHub Pages at `/rpm/momonga/aarch64/` and generates browsable directory indexes at every directory level. The RPMs and repository metadata use the Momonga signing key; the workflow publishes its public key beside the feed. Use this DNF configuration:
 
-Enable this configuration only after `https://kani.ftds.online/rpm/momonga/aarch64/repodata/repomd.xml.asc` returns HTTP 200. The latest signed-metadata deployment has not yet exposed that file at the public URL.
+The image ships it as `/etc/yum.repos.d/momonga-extra.repo` (`xavier-site-config`). Packages installed from the feed live on the rootfs slot, so install them again after a `momonga-ota` update:
 
 ```ini
 [momonga-extra]

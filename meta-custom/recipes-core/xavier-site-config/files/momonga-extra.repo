@@ -1,0 +1,7 @@
+[momonga-extra]
+name=Momonga Extra Packages
+baseurl=https://kani.ftds.online/rpm/momonga/aarch64/
+enabled=1
+gpgcheck=1
+gpgkey=https://kani.ftds.online/rpm/momonga/aarch64/RPM-GPG-KEY-momonga
+repo_gpgcheck=1
