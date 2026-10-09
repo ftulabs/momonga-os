@@ -12,6 +12,9 @@ S = "${WORKDIR}/git/tools/Polygraphy"
 
 inherit setuptools3
 
+# Include allarch runtime dependencies when generating SPDX relationship data.
+SPDX_MULTILIB_SSTATE_ARCHS:append = " all"
+
 RDEPENDS:${PN} += " \
     python3-numpy \
     python3-onnx \
