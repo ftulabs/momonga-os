@@ -124,4 +124,4 @@ sudo dnf install fzf bat nodejs24 zsh
 
 Neovim's prebuilt binary requires glibc 2.34 or newer; check Xavier's glibc before installing it. Node.js 24 requires glibc 2.28 or newer. Do not assume the target RPM solver checks every required symbol version.
 
-The latest feed release is `momonga-rpm-feed-2026.10.09-4`. It contains 315 signed RPMs, including both `locale-base-c` and `glibc-binary-localedata-c` so existing systems can install C.UTF-8. The Pages deployment succeeded; verify live RPM and metadata URLs after each release. The current Pages custom domain is `kani.ftds.online`; check its DNS/Pages configuration if the feed URL changes.
+The latest successful feed release is `momonga-rpm-feed-2026.10.09-5`. It contains 315 signed RPMs, including both `locale-base-c` and `glibc-binary-localedata-c` so existing systems can install C.UTF-8. The Pages workflow requires the metadata asset to be named exactly `feed-repodata.tar.gz`. Verify live RPM and metadata URLs after each release. The current Pages custom domain is `kani.ftds.online`; check its DNS/Pages configuration if the feed URL changes.

@@ -1,6 +1,6 @@
 # Momonga RPM feed package inventory
 
-This file records all 315 RPM package outputs in release `momonga-rpm-feed-2026.10.09-4`, including debug, development, locale, and source RPMs. It is not a list of packages installed in the Xavier image.
+This file records all 315 RPM package outputs in release `momonga-rpm-feed-2026.10.09-5`, including debug, development, locale, and source RPMs. It is not a list of packages installed in the Xavier image.
 
 ## Rebuild the feed packages
 
@@ -17,7 +17,7 @@ bitbake bash bat diffutils fzf gdbm glibc-locale nano ncurses neovim nodejs24 \
 
 BitBake also builds each recipe's dependencies. Follow `AGENTS.md` to assemble the curated full feed, sign RPMs, generate and sign metadata, and publish a complete feed release. Do not use `bitbake package-index` on the full deploy directory as the public feed contains only the packages listed in this index.
 
-## Packages added or updated in release 2026.10.09-4
+## Packages added or updated in release 2026.10.09-5
 
 The release adds Fastfetch, Neofetch, `momonga-locale`, ONNX, ONNX GraphSurgeon, TensorRT Python bindings, `tegrastats`, and the `glibc-locale` outputs `locale-base-c` and `glibc-binary-localedata-c`. The latter two satisfy the C.UTF-8 locale dependency on existing systems. It also updates custom RPMs with the C.UTF-8 runtime dependency; `jtop` is provided by `python3-jetson-stats`.
 
