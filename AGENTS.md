@@ -5,7 +5,7 @@ This section is the maintainer runbook for the extra-package RPM feed. The feed 
 ## Package scope and paths
 
 - The custom layer is `meta-custom/`.
-- Current package targets include Neovim, `bat`, `fzf`, `nodejs24`, Zsh, GDBM, Neofetch, Fastfetch, `momonga-locale`, `tegra-tools` (which outputs the `tegra-tools-tegrastats` package), and `python3-jetson-stats` (which provides `jtop`). Custom-layer RPMs depend on `momonga-locale`, which installs C.UTF-8 and sets it as the default locale. `nodejs24` packages the upstream Node.js 24 ARM64 binary and npm together. `fzf` packages its upstream ARM64 binary and MIT license; it does not currently package shell bindings or completions.
+- Current package targets include Neovim, `bat`, `fzf`, `nodejs24`, Zsh, GDBM, Neofetch, Fastfetch, `momonga-locale`, ONNX, ONNX GraphSurgeon, Polygraphy, TensorRT Python bindings, `tegra-tools` (which outputs `tegra-tools-tegrastats`), and `python3-jetson-stats` (which provides `jtop`). Custom-layer RPMs depend on `momonga-locale`, which installs C.UTF-8 and sets it as the default locale. `nodejs24` packages upstream Node.js 24 ARM64 binaries and npm together. `fzf` packages its upstream ARM64 binary and MIT license; it does not currently package shell bindings or completions.
 - The build/repository directory is `build-packages/tmp/deploy/rpm/armv8a_tegra/`. It contains the RPMs and generated `repodata/`.
 - Keep `MOMONGA-RPM-FEED-PACKAGES.md` up to date whenever RPMs are built, added, removed, or published. Record the recipe targets and actual RPM package names/EVRs, and clearly distinguish local/unpublished builds from the contents of the latest published release; do not label a recipe as built until its RPM output exists.
 - The DNF base URL is `https://kani.ftds.online/rpm/momonga/aarch64/`. The URL's `aarch64` is a public repository path; RPM filenames use Yocto's `armv8a_tegra` package architecture.
@@ -17,10 +17,14 @@ Run from the Poky checkout:
 
 ```sh
 source ./oe-init-build-env build-packages
-bitbake neovim bat fzf nodejs24 zsh gdbm neofetch fastfetch momonga-locale tegra-tools python3-jetson-stats
+bitbake bash bat diffutils fzf gdbm nano ncurses neovim nodejs24 \
+  neofetch fastfetch momonga-locale ptest-runner python3 python3-distro \
+  python3-jetson-stats python3-numpy python3-nvidia-ml-py python3-onnx \
+  python3-onnx-graphsurgeon python3-polygraphy python3-smbus2 python3-tensorrt \
+  tegra-tools tensorrt-trtexec-prebuilt zsh
 ```
 
-For a single package, run `bitbake <recipe>` with its recipe name, for example `bitbake fzf`. BitBake builds that recipe and its task/build dependencies. It does not build a flash image. `bitbake package-index` indexes RPMs already in the deploy directory; it does not build recipes.
+For a single package, run `bitbake <recipe>` with its recipe name, for example `bitbake fzf`. BitBake builds that recipe and its task/build dependencies. It does not build a flash image. `bitbake package-index` indexes every RPM in the deploy directory; it does not build recipes. The deploy directory contains many build dependencies that are not part of the public feed, so do not publish its RPM wildcard.
 
 Before updating an upstream package version, update the recipe filename/PV and verify source checksums. If package contents change without a version change, increment the package release (`PR`) so DNF sees a newer EVR. RPMs such as `-dbg`, `-dev`, `-doc`, `-src`, and `-ptest` are optional for normal target use; `nodejs24-dev` is useful when native npm add-ons must be built on Xavier. The fzf shell bindings/completions would need to be added separately if wanted.
 
@@ -38,7 +42,7 @@ The last inspection found 11 commits unique to each side, including core securit
 
 The signing key fingerprint is `BE27 4FDA FE86 B911 E0BA C3DB 5B2A A4FE 9449 ABF1`. Sign new or changed RPMs before building repository metadata. The passphrase is entered through GPG's pinentry; never put it in a command or file.
 
-BitBake's native `rpmsign` can be found and run as follows. Set `RPM_FILES` to only the new/changed RPMs; use the complete deploy RPM set when verifying:
+BitBake's native `rpmsign` can be found and run as follows. Set `RPM_FILES` to the unsigned or changed RPMs in the staged feed. Verify signatures against every staged RPM before publishing:
 
 ```sh
 KEY=BE274FDAFE86B911E0BAC3DB5B2AA4FE9449ABF1
@@ -52,16 +56,18 @@ for rpm in $RPM_FILES; do
 done
 ```
 
-After all package creation and RPM signing is complete, regenerate `repodata/`:
+After all package creation and RPM signing is complete, set `RPM_STAGE` to an empty staging directory under `/tmp/opencode/` and stage the **complete curated feed**: start with the previous release's RPM assets, replace superseded package EVRs with the newly built outputs, and add new package outputs. Use `MOMONGA-RPM-FEED-PACKAGES.md` to verify names and EVRs. Do not include unrelated RPMs from the deploy directory. Generate repository metadata in the staging directory, not the full deploy directory:
 
 ```sh
-bitbake package-index
+CREATEREPO=$(find build-packages/tmp/work/x86_64-linux/createrepo-c-native \
+  -type f -path '*/recipe-sysroot-native/usr/bin/createrepo_c' -print -quit)
+"$CREATEREPO" --database "$RPM_STAGE"
 ```
 
 Then create a detached ASCII-armored signature for the final `repomd.xml`:
 
 ```sh
-SRC="$PWD/build-packages/tmp/deploy/rpm/armv8a_tegra"
+SRC="$RPM_STAGE"
 gpg --armor --detach-sign --local-user "$KEY" \
   --output "$SRC/repodata/repomd.xml.asc" \
   "$SRC/repodata/repomd.xml"
@@ -118,4 +124,4 @@ sudo dnf install fzf bat nodejs24 zsh
 
 Neovim's prebuilt binary requires glibc 2.34 or newer; check Xavier's glibc before installing it. Node.js 24 requires glibc 2.28 or newer. Do not assume the target RPM solver checks every required symbol version.
 
-The latest feed release is `momonga-rpm-feed-2026.10.08-3`. It contains 135 RPMs and its `feed-repodata.tar.gz` asset includes a verified `repomd.xml.asc`. The Pages deployment ran successfully, but the public `repodata/` listing and `repomd.xml.asc` URL still returned the older deployment/404 when last checked. Verify the live signature URL before telling clients to enable `repo_gpgcheck=1`; if needed, rerun the Pages workflow for the published release after its required workflow check is deployed. The current Pages custom domain is `kani.ftds.online`; check its DNS/Pages configuration if the feed URL changes.
+The latest feed release is `momonga-rpm-feed-2026.10.09-3`. It contains 313 signed RPMs, and the Pages deployment succeeded. The live `repomd.xml.asc`, `RPM-GPG-KEY-momonga`, and `python3-onnx-graphsurgeon` RPM URLs returned HTTP 200 after deployment. The current Pages custom domain is `kani.ftds.online`; check its DNS/Pages configuration if the feed URL changes.

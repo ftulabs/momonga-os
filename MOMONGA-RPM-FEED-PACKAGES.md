@@ -1,6 +1,6 @@
 # Momonga RPM feed package inventory
 
-This file records the RPM package outputs in release `momonga-rpm-feed-2026.10.09-2` (290 RPMs), plus later local builds that are not yet published. It is an inventory of package outputs, including debug, development, locale, and source RPMs—not a list of packages installed in the Xavier image.
+This file records all 313 RPM package outputs in release `momonga-rpm-feed-2026.10.09-3`, including debug, development, locale, and source RPMs. It is not a list of packages installed in the Xavier image.
 
 ## Rebuild the feed packages
 
@@ -15,30 +15,11 @@ bitbake bash bat diffutils fzf gdbm nano ncurses neovim nodejs24 \
   tegra-tools tensorrt-trtexec-prebuilt zsh
 ```
 
-BitBake also builds each recipe's dependencies. To refresh repository metadata after signing any new or changed RPMs, run `bitbake package-index`; follow `AGENTS.md` to sign RPMs and metadata and publish a complete feed release.
+BitBake also builds each recipe's dependencies. Follow `AGENTS.md` to assemble the curated full feed, sign RPMs, generate and sign metadata, and publish a complete feed release. Do not use `bitbake package-index` on the full deploy directory as the public feed contains only the packages listed in this index.
 
-## Built locally, not yet published
+## Packages added or updated in release 2026.10.09-3
 
-The following main RPMs are present in the local deploy directory; their debug, development, documentation/source companion RPMs may also be present:
-
-| Package | Version-release | Notes |
-| --- | --- | --- |
-| `fastfetch` | 2.69.0-r1 | MomongaOS logo included |
-| `bat` | 0.26.1-r1 | Rebuilt with the `momonga-locale` runtime dependency |
-| `fzf` | 0.74.4-r1 | Rebuilt with the `momonga-locale` runtime dependency |
-| `momonga-locale` | 1.0-r0 | C.UTF-8 default and locale dependency |
-| `neofetch` | 7.1.0-r3 | Latest local build; older r1 artifact may remain in deploy |
-| `neovim` | 0.12.5-r1 | Rebuilt with the `momonga-locale` runtime dependency |
-| `nodejs24` | 24.21.0-r1 | Rebuilt with the `momonga-locale` runtime dependency |
-| `python3-jetson-stats` | 7.2.0-r1 | Provides `jtop`; rebuilt with the `momonga-locale` runtime dependency |
-| `python3-onnx` | 1.16.2-r0 | ONNX Python API |
-| `python3-onnx-graphsurgeon` | 0.5.8-r0 | Built as `noarch`; depends on `python3-onnx` |
-| `python3-nvidia-ml-py` | 13.615.71-r1 | Rebuilt with the `momonga-locale` runtime dependency |
-| `python3-polygraphy` | 0.43.1-r1 | ONNX/GraphSurgeon dependencies and C.UTF-8 dependency |
-| `python3-tensorrt` | 8.5.2-r0 | Recipe override corrected to deploy in the feed's `armv8a_tegra/` directory; rebuild and verify before release |
-| `tegra-tools-tegrastats` | 35.6.4+20260126234748-r0 | Produced by the `tegra-tools` recipe |
-
-`python3-polygraphy` declares ONNX tools as runtime dependencies; build/sign/index/publish only after all required dependencies and package architectures are ready.
+The release adds Fastfetch, Neofetch, `momonga-locale`, ONNX, ONNX GraphSurgeon, TensorRT Python bindings, and `tegrastats`. It also updates custom RPMs with the C.UTF-8 runtime dependency; `jtop` is provided by `python3-jetson-stats`.
 
 ## RPM package outputs
 
@@ -93,10 +74,10 @@ Package names and their exact RPM version-release values, read from each RPM hea
 | bash-locale-zh-tw | 5.2.21-r0 |
 | bash-ptest | 5.2.21-r0 |
 | bash-src | 5.2.21-r0 |
-| bat | 0.26.1-r0 |
-| bat-dbg | 0.26.1-r0 |
-| bat-dev | 0.26.1-r0 |
-| bat-doc | 0.26.1-r0 |
+| bat | 0.26.1-r1 |
+| bat-dbg | 0.26.1-r1 |
+| bat-dev | 0.26.1-r1 |
+| bat-doc | 0.26.1-r1 |
 | diffutils | 3.10-r0 |
 | diffutils-dbg | 3.10-r0 |
 | diffutils-dev | 3.10-r0 |
@@ -139,9 +120,14 @@ Package names and their exact RPM version-release values, read from each RPM hea
 | diffutils-locale-zh-tw | 3.10-r0 |
 | diffutils-ptest | 3.10-r0 |
 | diffutils-src | 3.10-r0 |
-| fzf | 0.74.4-r0 |
-| fzf-dbg | 0.74.4-r0 |
-| fzf-dev | 0.74.4-r0 |
+| fastfetch | 2.69.0-r1 |
+| fastfetch-dbg | 2.69.0-r1 |
+| fastfetch-dev | 2.69.0-r1 |
+| fastfetch-doc | 2.69.0-r1 |
+| fastfetch-src | 2.69.0-r1 |
+| fzf | 0.74.4-r1 |
+| fzf-dbg | 0.74.4-r1 |
+| fzf-dev | 0.74.4-r1 |
 | libform5 | 6.4-r0 |
 | libformw5 | 6.4-r0 |
 | libgdbm6 | 1.23-r0 |
@@ -177,6 +163,9 @@ Package names and their exact RPM version-release values, read from each RPM hea
 | libtic5 | 6.4-r0 |
 | libticw5 | 6.4-r0 |
 | libtinfo5 | 6.4-r0 |
+| momonga-locale | 1.0-r0 |
+| momonga-locale-dbg | 1.0-r0 |
+| momonga-locale-dev | 1.0-r0 |
 | nano | 7.2-r0 |
 | nano-dbg | 7.2-r0 |
 | nano-dev | 7.2-r0 |
@@ -229,14 +218,17 @@ Package names and their exact RPM version-release values, read from each RPM hea
 | ncurses-terminfo | 6.4-r0 |
 | ncurses-terminfo-base | 6.4-r0 |
 | ncurses-tools | 6.4-r0 |
-| neovim | 0.12.5-r0 |
-| neovim-dbg | 0.12.5-r0 |
-| neovim-dev | 0.12.5-r0 |
-| neovim-doc | 0.12.5-r0 |
-| nodejs24 | 24.21.0-r0 |
-| nodejs24-dbg | 24.21.0-r0 |
-| nodejs24-dev | 24.21.0-r0 |
-| nodejs24-doc | 24.21.0-r0 |
+| neofetch | 7.1.0-r3 |
+| neofetch-dbg | 7.1.0-r3 |
+| neofetch-dev | 7.1.0-r3 |
+| neovim | 0.12.5-r1 |
+| neovim-dbg | 0.12.5-r1 |
+| neovim-dev | 0.12.5-r1 |
+| neovim-doc | 0.12.5-r1 |
+| nodejs24 | 24.21.0-r1 |
+| nodejs24-dbg | 24.21.0-r1 |
+| nodejs24-dev | 24.21.0-r1 |
+| nodejs24-doc | 24.21.0-r1 |
 | ptest-runner | 2.5.1-r0 |
 | ptest-runner-dbg | 2.5.1-r0 |
 | ptest-runner-dev | 2.5.1-r0 |
@@ -271,9 +263,9 @@ Package names and their exact RPM version-release values, read from each RPM hea
 | python3-idle | 3.12.14-r0 |
 | python3-image | 3.12.14-r0 |
 | python3-io | 3.12.14-r0 |
-| python3-jetson-stats | 7.2.0-r0 |
-| python3-jetson-stats-dbg | 7.2.0-r0 |
-| python3-jetson-stats-dev | 7.2.0-r0 |
+| python3-jetson-stats | 7.2.0-r1 |
+| python3-jetson-stats-dbg | 7.2.0-r1 |
+| python3-jetson-stats-dev | 7.2.0-r1 |
 | python3-json | 3.12.14-r0 |
 | python3-logging | 3.12.14-r0 |
 | python3-mailbox | 3.12.14-r0 |
@@ -292,15 +284,22 @@ Package names and their exact RPM version-release values, read from each RPM hea
 | python3-numpy-ptest | 1.26.4-r0 |
 | python3-numpy-src | 1.26.4-r0 |
 | python3-numpy-staticdev | 1.26.4-r0 |
-| python3-nvidia-ml-py | 13.615.71-r0 |
-| python3-nvidia-ml-py-dbg | 13.615.71-r0 |
-| python3-nvidia-ml-py-dev | 13.615.71-r0 |
+| python3-onnx | 1.16.2-r0 |
+| python3-onnx-dbg | 1.16.2-r0 |
+| python3-onnx-dev | 1.16.2-r0 |
+| python3-onnx-src | 1.16.2-r0 |
+| python3-onnx-graphsurgeon | 0.5.8-r0 |
+| python3-onnx-graphsurgeon-dbg | 0.5.8-r0 |
+| python3-onnx-graphsurgeon-dev | 0.5.8-r0 |
+| python3-nvidia-ml-py | 13.615.71-r1 |
+| python3-nvidia-ml-py-dbg | 13.615.71-r1 |
+| python3-nvidia-ml-py-dev | 13.615.71-r1 |
 | python3-pickle | 3.12.14-r0 |
 | python3-pkgutil | 3.12.14-r0 |
 | python3-plistlib | 3.12.14-r0 |
-| python3-polygraphy | 0.43.1-r0 |
-| python3-polygraphy-dbg | 0.43.1-r0 |
-| python3-polygraphy-dev | 0.43.1-r0 |
+| python3-polygraphy | 0.43.1-r1 |
+| python3-polygraphy-dbg | 0.43.1-r1 |
+| python3-polygraphy-dev | 0.43.1-r1 |
 | python3-pprint | 3.12.14-r0 |
 | python3-profile | 3.12.14-r0 |
 | python3-ptest | 3.12.14-r0 |
@@ -315,6 +314,10 @@ Package names and their exact RPM version-release values, read from each RPM hea
 | python3-statistics | 3.12.14-r0 |
 | python3-stringold | 3.12.14-r0 |
 | python3-syslog | 3.12.14-r0 |
+| python3-tensorrt | 8.5.2-r0 |
+| python3-tensorrt-dbg | 8.5.2-r0 |
+| python3-tensorrt-dev | 8.5.2-r0 |
+| python3-tensorrt-src | 8.5.2-r0 |
 | python3-terminal | 3.12.14-r0 |
 | python3-tests | 3.12.14-r0 |
 | python3-threading | 3.12.14-r0 |
@@ -328,6 +331,7 @@ Package names and their exact RPM version-release values, read from each RPM hea
 | python3-xmlrpc | 3.12.14-r0 |
 | python3-zipapp | 3.12.14-r0 |
 | python3-zoneinfo | 3.12.14-r0 |
+| tegra-tools-tegrastats | 35.6.4+20260126234748-r0 |
 | tensorrt-trtexec-prebuilt | 8.5.2+1-r0 |
 | tensorrt-trtexec-prebuilt-dbg | 8.5.2+1-r0 |
 | tensorrt-trtexec-prebuilt-dev | 8.5.2+1-r0 |
