@@ -24,11 +24,17 @@ The following main RPMs are present in the local deploy directory; their debug, 
 | Package | Version-release | Notes |
 | --- | --- | --- |
 | `fastfetch` | 2.69.0-r1 | MomongaOS logo included |
+| `bat` | 0.26.1-r1 | Rebuilt with the `momonga-locale` runtime dependency |
+| `fzf` | 0.74.4-r1 | Rebuilt with the `momonga-locale` runtime dependency |
 | `momonga-locale` | 1.0-r0 | C.UTF-8 default and locale dependency |
 | `neofetch` | 7.1.0-r3 | Latest local build; older r1 artifact may remain in deploy |
-| `python3-jetson-stats` | 7.2.0-r0 | Provides `jtop` |
+| `neovim` | 0.12.5-r1 | Rebuilt with the `momonga-locale` runtime dependency |
+| `nodejs24` | 24.21.0-r1 | Rebuilt with the `momonga-locale` runtime dependency |
+| `python3-jetson-stats` | 7.2.0-r1 | Provides `jtop`; rebuilt with the `momonga-locale` runtime dependency |
 | `python3-onnx` | 1.16.2-r0 | ONNX Python API |
 | `python3-onnx-graphsurgeon` | 0.5.8-r0 | Built as `noarch`; depends on `python3-onnx` |
+| `python3-nvidia-ml-py` | 13.615.71-r1 | Rebuilt with the `momonga-locale` runtime dependency |
+| `python3-polygraphy` | 0.43.1-r1 | ONNX/GraphSurgeon dependencies and C.UTF-8 dependency |
 | `python3-tensorrt` | 8.5.2-r0 | Recipe override corrected to deploy in the feed's `armv8a_tegra/` directory; rebuild and verify before release |
 | `tegra-tools-tegrastats` | 35.6.4+20260126234748-r0 | Produced by the `tegra-tools` recipe |
 
