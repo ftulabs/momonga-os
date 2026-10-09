@@ -1,0 +1,39 @@
+From: Momonga Build <build@momonga.invalid>
+Subject: [PATCH] fastfetch: add builtin MomongaOS logo
+
+Upstream-Status: Inappropriate [MomongaOS-specific branding]
+
+Register the Momonga logo under the MomongaOS os-release ID so Fastfetch
+selects it automatically on Momonga systems.
+
+--- a/src/logo/ascii/m/momonga.txt
++++ b/src/logo/ascii/m/momonga.txt
+@@ -0,0 +1,13 @@
++$1    ⣀⣀⡀        ⣀⣀⣀
++  ⢠⡟⠁⡔⣹       ⢸⡇⡀⡈⢳
++  ⢻⡄⠠⣇⠻⣄⡤⠤⠦⠶⠤⣄⣼⣠⡅ ⢸
++   ⢳⣬⠋         ⠈⠃⣴⣏⣴ ⢲⠂⢤⣄
++  ⢀⡞⠁  ⣀⡀⠄  ⢀⢀⣀  ⠈⠳⡈⠆⠉ ⠋⠘⡄
++ ⡶⠚   ⢼⣥⣬⡆  ⢰⣧⣤⣷   ⠣⠤⠄   ⢹
++⢸⢋  ⡰⡢⡼⡍⠉⠠⠄⢆⡄⠉⠉⡵⣤⣶⠄ ⡒⠄  ⡉⢻
++⠈⢧⡆ ⠁⠂⠋   ⠈⠃   ⠉⠑⠈ ⠰⡜  ⣀⢉⠏
++  ⠈⣷             ⡀⢸   ⢀⠈⡟
++   ⢿⣠⠇           ⣇⡼  ⢠⢠⠟
++    ⢹⡄           ⣧⣴⣀⡧⠞⠁
++    ⠈⣇⢰⡤⢤⣤⣤⣤⢤⡤⢤⣤⢸⡏⠉
++     ⠙⠚⠁       ⠙⠚⠃
+--- a/src/logo/ascii/m.inc
++++ b/src/logo/ascii/m.inc
+@@ -5,2 +5,12 @@
+ static const FFlogo M[] = {
++    #ifdef FASTFETCH_DATATEXT_LOGO_MOMONGA
++    // MomongaOS
++    {
++        .names = { "momonga" },
++        .lines = FASTFETCH_DATATEXT_LOGO_MOMONGA,
++        .colors = {
++            FF_COLOR_FG_BLUE,
++        },
++    },
++    #endif
+     #ifdef FASTFETCH_DATATEXT_LOGO_MACARONIOS

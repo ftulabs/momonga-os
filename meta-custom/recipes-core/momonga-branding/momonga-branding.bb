@@ -5,6 +5,8 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 SRC_URI = "file://neofetch.conf"
 S = "${WORKDIR}"
 
+PR = "r1"
+
 do_install() {
     install -d ${D}${sysconfdir}/neofetch
     install -m 0644 ${WORKDIR}/neofetch.conf ${D}${sysconfdir}/neofetch/config.conf

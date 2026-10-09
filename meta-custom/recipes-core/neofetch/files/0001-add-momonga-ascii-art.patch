@@ -6,26 +6,36 @@ without changing upstream system-information behavior.
 
 --- a/neofetch
 +++ b/neofetch
-@@ -5287,6 +5287,24 @@ get_distro_ascii() {
+@@ -38,2 +38,6 @@
+ sys_locale=${LANG:-C}
++if [[ "$sys_locale" == C || "$sys_locale" == POSIX ]]; then
++    utf8_locale=$(locale -a 2>/dev/null | grep -iE '^(C\.UTF-8|C\.utf8|en_US\.UTF-8|en_US\.utf8)$' | head -n 1)
++    [[ -n "$utf8_locale" ]] && sys_locale="$utf8_locale"
++fi
+ XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-${HOME}/.config}
+@@ -3883 +3887 @@ print_ascii() {
+-    LC_ALL="$sys_locale"
++    export LC_ALL="$sys_locale"
+@@ -5287,6 +5291,24 @@ get_distro_ascii() {
      #
      # $ascii_distro is the same as $distro.
      case $(trim "$ascii_distro") in
 +        "momonga"*|"Momonga"*)
 +            set_colors 4 6 7 1
 +            read -rd '' ascii_data <<'EOF'
-+${c1}    ⣀⣀⡀        ⣀⣀⣀
-+  ⢠⡟⠁⡔⣹       ⢸⡇⡀⡈⢳
-+  ⢻⡄⠠⣇⠻⣄⡤⠤⠦⠶⠤⣄⣼⣠⡅
-+   ⢳⣬⠋         ⠈⠃⣴⣏⣴
-+  ⢀⡞⠁  ⣀⡀⠄  ⢀⢀⣀  ⠈⠳⡈⠆⠉
-+ ⡶⠚   ⢼⣥⣬⡆  ⢰⣧⣤⣷   ⠣⠤⠄
-+⢸⢋  ⡰⡢⡼⡍⠉⠠⠄⢆⡄⠉⠉⡵⣤⣶⠄
-+⠈⢧⡆ ⠁⠂⠋   ⠈⠃   ⠉⠑⠈ ⠰⡜
-+  ⠈⣷             ⡀⢸
-+   ⢿⣠⠇           ⣇⡼
-+    ⢹⡄           ⣧⣴⣀⡧⠞⠁
-+    ⠈⣇⢰⡤⢤⣤⣤⣤⢤⡤⢤⣤⢸⡏⠉
-+     ⠙⠚⠁       ⠙⠚⠃
++${c1}    ⣀⣀⡀        ⣀⣀⣀        
++  ⢠⡟⠁⡔⣹       ⢸⡇⡀⡈⢳       
++  ⢻⡄⠠⣇⠻⣄⡤⠤⠦⠶⠤⣄⣼⣠⡅ ⢸       
++   ⢳⣬⠋         ⠈⠃⣴⣏⣴ ⢲⠂⢤⣄ 
++  ⢀⡞⠁  ⣀⡀⠄  ⢀⢀⣀  ⠈⠳⡈⠆⠉ ⠋⠘⡄
++ ⡶⠚   ⢼⣥⣬⡆  ⢰⣧⣤⣷   ⠣⠤⠄   ⢹
++⢸⢋  ⡰⡢⡼⡍⠉⠠⠄⢆⡄⠉⠉⡵⣤⣶⠄ ⡒⠄  ⡉⢻
++⠈⢧⡆ ⠁⠂⠋   ⠈⠃   ⠉⠑⠈ ⠰⡜  ⣀⢉⠏
++  ⠈⣷             ⡀⢸   ⢀⠈⡟ 
++   ⢿⣠⠇           ⣇⡼  ⢠⢠⠟  
++    ⢹⡄           ⣧⣴⣀⡧⠞⠁   
++    ⠈⣇⢰⡤⢤⣤⣤⣤⢤⡤⢤⣤⢸⡏⠉       
++     ⠙⠚⠁       ⠙⠚⠃        
 +EOF
 +        ;;
          "AIX"*)

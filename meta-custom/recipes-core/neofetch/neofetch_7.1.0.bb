@@ -11,6 +11,8 @@ SRC_URI[script.sha256sum] = "3dc33493e54029fb1528251552093a9f9a2894fcf94f9c3a6f8
 S = "${WORKDIR}"
 inherit allarch
 
+PR = "r3"
+
 RDEPENDS:${PN} = "bash coreutils grep sed gawk"
 
 do_configure[noexec] = "1"
