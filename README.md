@@ -187,6 +187,9 @@ package from `scripts/momonga-flash-package` contains `<name>.rootfs.ext4.zst` a
 4. To go back by hand: `sudo nvbootctrl -t rootfs set-active-boot-slot <slot>`, then reboot.
    `momonga-ota status` shows the slots.
 
+Switching the rootfs slot also switches the bootloader chain to the same slot (`nvbootctrl
+dump-slots-info`); both chains hold the bootloader from the last flash or capsule update.
+
 State on the rootfs that `momonga-ota` does not copy (anything installed with dnf, edits under
 `/etc`) stays with the old slot; `/home` and the Docker data root are on the SD card and shared.
 

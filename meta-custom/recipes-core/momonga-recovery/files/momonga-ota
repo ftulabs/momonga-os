@@ -67,7 +67,7 @@ install_image() {
 
     mnt=$(mktemp -d)
     mount "$dev" "$mnt"
-    trap 'umount "$mnt"; rmdir "$mnt"' EXIT
+    trap "umount '$mnt'; rmdir '$mnt'" EXIT
     # Same SSH host keys and the same Tailscale node, so the board keeps its
     # tailnet address and ssh does not see a changed host.
     for key in /etc/ssh/ssh_host_*key*; do
@@ -81,6 +81,7 @@ install_image() {
     : > "$mnt$trial_marker"
     umount "$mnt"
     rmdir "$mnt"
+    trap - EXIT
 
     nvbootctrl -t rootfs set-active-boot-slot "$target"
     log "slot $target is active for the next boot, on trial. Reboot to start it. If it is not"
