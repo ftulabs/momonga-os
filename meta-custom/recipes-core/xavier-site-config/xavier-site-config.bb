@@ -12,7 +12,9 @@ S = "${WORKDIR}"
 
 do_install() {
     install -D -m 0644 ${S}/10-sdcard.conf ${D}${systemd_system_unitdir}/docker.service.d/10-sdcard.conf
-    install -D -m 0440 ${S}/90-wheel-nopasswd ${D}${sysconfdir}/sudoers.d/90-wheel-nopasswd
+    # Same mode as sudo-lib's /etc/sudoers.d, or the rootfs transaction rejects both.
+    install -d -m 0750 ${D}${sysconfdir}/sudoers.d
+    install -m 0440 ${S}/90-wheel-nopasswd ${D}${sysconfdir}/sudoers.d/90-wheel-nopasswd
     install -D -m 0644 ${S}/momonga-extra.repo ${D}${sysconfdir}/yum.repos.d/momonga-extra.repo
     install -D -m 0644 ${S}/cuda.sh ${D}${sysconfdir}/profile.d/cuda.sh
     install -d ${D}/mnt/sdcard ${D}/mnt/nfs-models
