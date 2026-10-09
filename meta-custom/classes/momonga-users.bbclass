@@ -10,18 +10,31 @@ inherit extrausers
 
 MOMONGA_USERS ??= ""
 MOMONGA_USER_GROUPS ??= "wheel,docker,kvm,video,render"
+MOMONGA_USER_LINGER ??= ""
 MOMONGA_USERS_IMAGES ??= "core-image-minimal"
 
 python __anonymous() {
     if d.getVar('PN') not in (d.getVar('MOMONGA_USERS_IMAGES') or '').split():
         return
-    d.appendVar('ROOTFS_POSTPROCESS_COMMAND', ' install_momonga_user_keys;')
+    d.appendVar('ROOTFS_POSTPROCESS_COMMAND', ' install_momonga_user_keys install_momonga_user_linger;')
     groups = d.getVar('MOMONGA_USER_GROUPS')
     for entry in (d.getVar('MOMONGA_USERS') or '').split():
         name, uid, shell = entry.split(':')
         d.appendVar('EXTRA_USERS_PARAMS',
                     ' groupadd -g %s %s; useradd -m -u %s -g %s -G %s -s %s %s;'
                     % (uid, name, uid, name, groups, shell, name))
+}
+
+python install_momonga_user_linger () {
+    import os
+    linger_dir = os.path.join(d.getVar('IMAGE_ROOTFS'), 'var/lib/systemd/linger')
+    users = (d.getVar('MOMONGA_USER_LINGER') or '').split()
+    if not users:
+        return
+    os.makedirs(linger_dir, exist_ok=True)
+    for name in users:
+        with open(os.path.join(linger_dir, name), 'a'):
+            pass
 }
 
 python install_momonga_user_keys () {
