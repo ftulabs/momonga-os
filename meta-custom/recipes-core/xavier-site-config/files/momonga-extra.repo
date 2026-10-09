@@ -1,5 +1,5 @@
 [momonga-extra]
-name=Momonga Extra Packages
+name=Momonga Extra
 baseurl=https://kani.ftds.online/rpm/momonga/aarch64/
 enabled=1
 gpgcheck=1
