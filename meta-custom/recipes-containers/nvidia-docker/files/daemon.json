@@ -8,6 +8,6 @@
     },
     "default-runtime": "nvidia",
     "insecure-registries": [
-        "10.0.190.65:5000"
+        "minh:5000"
     ]
 }
