@@ -1,22 +1,6 @@
 # Momonga RPM feed package inventory
 
-This file records all 320 RPM package outputs in release `momonga-rpm-feed-2026.10.11-2`, including debug, development, locale, and source RPMs. It is not a list of packages installed in the Xavier image. The GCC-for-NVCC 10.3 packages and corrected `tegra-nvpmodel-base` listed below are signed local builds pending feed publication.
-
-## Local builds pending publication
-
-Built from Meta-tegra's `gcc-for-nvcc_10.3.bb` for the Xavier (`armv8a_tegra`). GCC 10.3.0 is intended as CUDA 11.4's host compiler. `tegra-nvpmodel-base` was rebuilt at a new EVR because the RPM at the previously published EVR failed signature verification. These packages are signed but not yet published:
-
-| Recipe target | RPM package | Version-release |
-| --- | --- | --- |
-| gcc-for-nvcc | gcc-for-nvcc | 10.3.0-r0 |
-| gcc-for-nvcc | g++-for-nvcc | 10.3.0-r0 |
-| gcc-for-nvcc | cpp-for-nvcc | 10.3.0-r0 |
-| gcc-for-nvcc | gcc-for-nvcc-symlinks | 10.3.0-r0 |
-| gcc-for-nvcc | g++-for-nvcc-symlinks | 10.3.0-r0 |
-| gcc-for-nvcc | cpp-for-nvcc-symlinks | 10.3.0-r0 |
-| tegra-nvpmodel-base | tegra-nvpmodel-base | 35.6.4+20260126234748-r1 |
-
-The compiler RPMs require the matching Poky runtime libraries. Verify DNF dependency resolution on the Xavier before installing.
+This file records all 326 RPM package outputs in release `momonga-rpm-feed-2026.10.11-3`, including debug, development, locale, and source RPMs. It is not a list of packages installed in the Xavier image.
 
 ## Rebuild the feed packages
 
@@ -37,6 +21,8 @@ BitBake also builds each recipe's dependencies. Follow `AGENTS.md` to assemble t
 ## Packages added or updated in release 2026.10.09-5
 
 Release `momonga-rpm-feed-2026.10.11-1` added Fastfetch, Neofetch, `momonga-locale`, ONNX, ONNX GraphSurgeon, TensorRT Python bindings, `tegrastats`, and the `glibc-locale` outputs `locale-base-c` and `glibc-binary-localedata-c`. Release `momonga-rpm-feed-2026.10.11-2` adds the `jetson_clocks` and `nvpmodel` tools and the runtime packages they require. `jtop` is provided by `python3-jetson-stats`.
+
+Release `momonga-rpm-feed-2026.10.11-3` adds GCC 10.3.0 for CUDA 11.4 host compilation (`gcc-for-nvcc`, `g++-for-nvcc`, `cpp-for-nvcc`, and their symlink packages). It also replaces the invalidly signed `tegra-nvpmodel-base` RPM with EVR `35.6.4+20260126234748-r1`.
 
 ## RPM package outputs
 
@@ -95,6 +81,8 @@ Package names and their exact RPM version-release values, read from each RPM hea
 | bat-dbg | 0.26.1-r1 |
 | bat-dev | 0.26.1-r1 |
 | bat-doc | 0.26.1-r1 |
+| cpp-for-nvcc | 10.3.0-r0 |
+| cpp-for-nvcc-symlinks | 10.3.0-r0 |
 | diffutils | 3.10-r0 |
 | diffutils-dbg | 3.10-r0 |
 | diffutils-dev | 3.10-r0 |
@@ -145,6 +133,10 @@ Package names and their exact RPM version-release values, read from each RPM hea
 | fzf | 0.74.4-r1 |
 | fzf-dbg | 0.74.4-r1 |
 | fzf-dev | 0.74.4-r1 |
+| g++-for-nvcc | 10.3.0-r0 |
+| g++-for-nvcc-symlinks | 10.3.0-r0 |
+| gcc-for-nvcc | 10.3.0-r0 |
+| gcc-for-nvcc-symlinks | 10.3.0-r0 |
 | glibc-binary-localedata-c | 2.39+git-r0 |
 | libform5 | 6.4-r0 |
 | libformw5 | 6.4-r0 |
@@ -352,7 +344,7 @@ Package names and their exact RPM version-release values, read from each RPM hea
 | python3-zoneinfo | 3.12.14-r0 |
 | tegra-nvpower | 35.6.4+20260126234748-r0 |
 | tegra-nvpmodel | 35.6.4-r0 |
-| tegra-nvpmodel-base | 35.6.4+20260126234748-r0 |
+| tegra-nvpmodel-base | 35.6.4+20260126234748-r1 |
 | tegra-tools | 35.6.4+20260126234748-r0 |
 | tegra-tools-jetson-clocks | 35.6.4+20260126234748-r0 |
 | tegra-tools-tegrastats | 35.6.4+20260126234748-r0 |
