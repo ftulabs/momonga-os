@@ -1,6 +1,22 @@
 # Momonga RPM feed package inventory
 
-This file records all 320 RPM package outputs in release `momonga-rpm-feed-2026.10.11-2`, including debug, development, locale, and source RPMs. It is not a list of packages installed in the Xavier image.
+This file records all 320 RPM package outputs in release `momonga-rpm-feed-2026.10.11-2`, including debug, development, locale, and source RPMs. It is not a list of packages installed in the Xavier image. The GCC-for-NVCC 10.3 packages and corrected `tegra-nvpmodel-base` listed below are signed local builds pending feed publication.
+
+## Local builds pending publication
+
+Built from Meta-tegra's `gcc-for-nvcc_10.3.bb` for the Xavier (`armv8a_tegra`). GCC 10.3.0 is intended as CUDA 11.4's host compiler. `tegra-nvpmodel-base` was rebuilt at a new EVR because the RPM at the previously published EVR failed signature verification. These packages are signed but not yet published:
+
+| Recipe target | RPM package | Version-release |
+| --- | --- | --- |
+| gcc-for-nvcc | gcc-for-nvcc | 10.3.0-r0 |
+| gcc-for-nvcc | g++-for-nvcc | 10.3.0-r0 |
+| gcc-for-nvcc | cpp-for-nvcc | 10.3.0-r0 |
+| gcc-for-nvcc | gcc-for-nvcc-symlinks | 10.3.0-r0 |
+| gcc-for-nvcc | g++-for-nvcc-symlinks | 10.3.0-r0 |
+| gcc-for-nvcc | cpp-for-nvcc-symlinks | 10.3.0-r0 |
+| tegra-nvpmodel-base | tegra-nvpmodel-base | 35.6.4+20260126234748-r1 |
+
+The compiler RPMs require the matching Poky runtime libraries. Verify DNF dependency resolution on the Xavier before installing.
 
 ## Rebuild the feed packages
 
