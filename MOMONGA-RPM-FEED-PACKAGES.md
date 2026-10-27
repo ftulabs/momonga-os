@@ -1,6 +1,6 @@
 # Momonga RPM feed package inventory
 
-This file records all 329 RPM package outputs in release `momonga-rpm-feed-2026.10.27-1`, including debug, development, locale, and source RPMs. It is not a list of packages installed in the Xavier image.
+This file records all 341 RPM package outputs in release `momonga-rpm-feed-2026.10.27-2`, including debug, development, locale, and source RPMs. It is not a list of packages installed in the Xavier image.
 
 ## Rebuild the feed packages
 
@@ -9,7 +9,7 @@ From the Poky checkout, initialize the package build directory and build these r
 ```sh
 source ./oe-init-build-env build-packages
 bitbake bash bat cloudflared diffutils fzf gdbm glibc-locale nano ncurses neovim nodejs24 \
-  neofetch fastfetch momonga-locale ptest-runner python3 python3-distro \
+  neofetch fastfetch momonga-locale openssl ptest-runner python3 python3-distro \
   python3-jetson-stats python3-numpy python3-nvidia-ml-py python3-onnx \
   python3-onnx-graphsurgeon python3-polygraphy python3-smbus2 python3-tensorrt \
   tegra-tools tegra-nvpmodel-base tegra-nvpmodel tegra-nvpower \
@@ -25,6 +25,8 @@ Release `momonga-rpm-feed-2026.10.11-1` added Fastfetch, Neofetch, `momonga-loca
 Release `momonga-rpm-feed-2026.10.11-3` adds GCC 10.3.0 for CUDA 11.4 host compilation (`gcc-for-nvcc`, `g++-for-nvcc`, `cpp-for-nvcc`, and their symlink packages). It also replaces the invalidly signed `tegra-nvpmodel-base` RPM with EVR `35.6.4+20260126234748-r1`.
 
 Release `momonga-rpm-feed-2026.10.27-1` adds `cloudflared` 2026.10.4 to address a critical security vulnerability, upgrades `fastfetch` to 2.70.0, `fzf` to 0.74.5, `neovim` to 0.12.6, `nodejs24` to 24.22.1, `python3-jetson-stats` to 7.2.2, and updates Python 3 to 3.12.15.
+
+Release `momonga-rpm-feed-2026.10.27-2` adds OpenSSL 3.5.9 packages (`libcrypto3`, `libssl3`, `openssl`, `openssl-bin`, `openssl-conf`, and related packages) to satisfy runtime dependencies for `python3-crypt` and `python3-io` on Xavier.
 
 ## RPM package outputs
 
@@ -143,6 +145,7 @@ Package names and their exact RPM version-release values, read from each RPM hea
 | gcc-for-nvcc | 10.3.0-r0 |
 | gcc-for-nvcc-symlinks | 10.3.0-r0 |
 | glibc-binary-localedata-c | 2.39+git-r0 |
+| libcrypto3 | 3.5.9-r0 |
 | libform5 | 6.4-r0 |
 | libformw5 | 6.4-r0 |
 | libgdbm-bin | 1.23-r0 |
@@ -175,6 +178,7 @@ Package names and their exact RPM version-release values, read from each RPM hea
 | libpanelw5 | 6.4-r0 |
 | libpython3.12-1.0 | 3.12.15-r0 |
 | libpython3.12-staticdev | 3.12.15-r0 |
+| libssl3 | 3.5.9-r0 |
 | libtic5 | 6.4-r0 |
 | libticw5 | 6.4-r0 |
 | libtinfo5 | 6.4-r0 |
@@ -245,6 +249,16 @@ Package names and their exact RPM version-release values, read from each RPM hea
 | nodejs24-dbg | 24.22.1-r0 |
 | nodejs24-dev | 24.22.1-r0 |
 | nodejs24-doc | 24.22.1-r0 |
+| openssl | 3.5.9-r0 |
+| openssl-bin | 3.5.9-r0 |
+| openssl-conf | 3.5.9-r0 |
+| openssl-dbg | 3.5.9-r0 |
+| openssl-dev | 3.5.9-r0 |
+| openssl-engines | 3.5.9-r0 |
+| openssl-misc | 3.5.9-r0 |
+| openssl-ossl-module-legacy | 3.5.9-r0 |
+| openssl-src | 3.5.9-r0 |
+| openssl-staticdev | 3.5.9-r0 |
 | ptest-runner | 2.5.1-r0 |
 | ptest-runner-dbg | 2.5.1-r0 |
 | ptest-runner-dev | 2.5.1-r0 |
