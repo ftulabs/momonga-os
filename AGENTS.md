@@ -5,7 +5,7 @@ This section is the maintainer runbook for the extra-package RPM feed. RPMs are 
 ## Package scope and paths
 
 - The custom layer is `meta-custom/`.
-- Current package targets include Neovim, `bat`, `fzf`, `nodejs24`, Zsh, GDBM, Neofetch, Fastfetch, `momonga-locale`, ONNX, ONNX GraphSurgeon, Polygraphy, TensorRT Python bindings, `tegra-tools` (which outputs `tegra-tools-tegrastats`), and `python3-jetson-stats` (which provides `jtop`). Custom-layer RPMs depend on `momonga-locale`, which installs C.UTF-8 and sets it as the default locale. `nodejs24` packages upstream Node.js 24 ARM64 binaries and npm together. `fzf` packages its upstream ARM64 binary and MIT license; it does not currently package shell bindings or completions.
+- Current package targets include `cloudflared`, Neovim, `bat`, `fzf`, `nodejs24`, Zsh, GDBM, Neofetch, Fastfetch, `momonga-locale`, ONNX, ONNX GraphSurgeon, Polygraphy, TensorRT Python bindings, `tegra-tools` (which outputs `tegra-tools-tegrastats`), and `python3-jetson-stats` (which provides `jtop`). Custom-layer RPMs depend on `momonga-locale`, which installs C.UTF-8 and sets it as the default locale. `nodejs24` packages upstream Node.js 24 ARM64 binaries and npm together. `fzf` packages its upstream ARM64 binary and MIT license; it does not currently package shell bindings or completions.
 - The build/repository directory is `build-packages/tmp/deploy/rpm/armv8a_tegra/`. It contains the RPMs and generated `repodata/`.
 - Keep `MOMONGA-RPM-FEED-PACKAGES.md` up to date whenever RPMs are built, added, removed, or published. Record the recipe targets and actual RPM package names/EVRs, and clearly distinguish local/unpublished builds from the contents of the latest published release; do not label a recipe as built until its RPM output exists.
 - The DNF base URL is `https://kani.ftds.online/rpm/momonga/aarch64/`. The URL's `aarch64` is a public repository path; RPM filenames use Yocto's `armv8a_tegra` package architecture.
@@ -17,7 +17,7 @@ Run from the Poky checkout:
 
 ```sh
 source ./oe-init-build-env build-packages
-bitbake bash bat diffutils fzf gdbm nano ncurses neovim nodejs24 \
+bitbake bash bat cloudflared diffutils fzf gdbm nano ncurses neovim nodejs24 \
   neofetch fastfetch momonga-locale ptest-runner python3 python3-distro glibc-locale \
   python3-jetson-stats python3-numpy python3-nvidia-ml-py python3-onnx \
   python3-onnx-graphsurgeon python3-polygraphy python3-smbus2 python3-tensorrt \

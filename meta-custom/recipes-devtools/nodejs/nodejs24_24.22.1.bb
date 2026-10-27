@@ -1,11 +1,11 @@
 SUMMARY = "Prebuilt Node.js 24 runtime and npm for AArch64"
-PR = "r1"
+PR = "r0"
 HOMEPAGE = "https://nodejs.org/"
 LICENSE = "MIT & ISC & BSD-2-Clause & BSD-3-Clause & Artistic-2.0 & Apache-2.0"
 LIC_FILES_CHKSUM = "file://${S}/LICENSE;md5=edc0683b77d2c503217642fa000b5b31"
 
 SRC_URI = "https://nodejs.org/dist/v${PV}/node-v${PV}-linux-arm64.tar.xz;name=arm64"
-SRC_URI[arm64.sha256sum] = "6ad1325edbdb5649c379b75a237147a666c95d4f9ae8d340fef2d1575d289ad2"
+SRC_URI[arm64.sha256sum] = "dbabf7a1cbf947e6059ffad2c27b80041db97dea1e553b62afdee7f13fca336e"
 
 S = "${WORKDIR}/node-v${PV}-linux-arm64"
 

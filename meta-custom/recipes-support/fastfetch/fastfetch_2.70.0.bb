@@ -6,11 +6,11 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=2090e7d93df7ad5a3d41f6fb4226ac76"
 
 SRC_URI = "git://github.com/fastfetch-cli/fastfetch.git;protocol=https;branch=dev \
            file://0001-add-momonga-logo.patch"
-SRCREV = "0c3b852bf7bad2837a814c7a31bf332092048a2b"
+SRCREV = "17bb3fd2384bd814b421d73b8c8b8d08e06cfa26"
 
 S = "${WORKDIR}/git"
 
-PR = "r1"
+PR = "r0"
 
 DEPENDS = "linux-libc-headers zlib"
 

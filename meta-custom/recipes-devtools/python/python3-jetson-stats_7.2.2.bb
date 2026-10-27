@@ -1,12 +1,12 @@
 SUMMARY = "Jetson system monitor and process viewer"
-PR = "r1"
+PR = "r0"
 HOMEPAGE = "https://github.com/rbonghi/jetson_stats"
 LICENSE = "AGPL-3.0-or-later"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=8763b57f0092c337eb12c354870a324a"
 
 PYPI_PACKAGE = "jetson_stats"
 
-SRC_URI[sha256sum] = "b28e0eba26b96d56a610cbbfbcb5d3d2b74ce22c70d9f4d1b090f7f5f9ff44b9"
+SRC_URI[sha256sum] = "78dd111431408e156b73a80d7dc9355f41aa59b5f487d99a52f4fa55eae8ebda"
 
 inherit pypi setuptools3 systemd useradd
 

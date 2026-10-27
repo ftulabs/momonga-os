@@ -1,5 +1,5 @@
 SUMMARY = "Hyperextensible text editor"
-PR = "r1"
+PR = "r0"
 HOMEPAGE = "https://neovim.io/"
 LICENSE = "Apache-2.0 & Vim"
 LIC_FILES_CHKSUM = "file://${WORKDIR}/LICENSE.txt;md5=05b485c2880cb0b3d7dc27f07456ace1"
@@ -8,7 +8,7 @@ SRC_URI = " \
     https://github.com/neovim/neovim/releases/download/v${PV}/nvim-linux-arm64.tar.gz;name=arm64 \
     https://raw.githubusercontent.com/neovim/neovim/v${PV}/LICENSE.txt;name=license;downloadfilename=LICENSE.txt \
 "
-SRC_URI[arm64.sha256sum] = "1aa5ca085249580ae0f91eb14f27ec0919773ff2d99a163d03f3d6c21ac29725"
+SRC_URI[arm64.sha256sum] = "8f1f64a0bdb97247034038c3823c6cbad5bdf9ecd5751b85494b71c3ee04c815"
 SRC_URI[license.sha256sum] = "de23202ef9a51f5e654034190539739a4abece5505f2ce75e780791106707011"
 
 S = "${WORKDIR}/nvim-linux-arm64"

@@ -3,9 +3,13 @@ HOMEPAGE = "https://developers.cloudflare.com/cloudflare-one/connections/connect
 LICENSE = "CLOSED"
 
 SRC_URI = "https://github.com/cloudflare/cloudflared/releases/download/${PV}/cloudflared-linux-arm64;name=cloudflared"
-SRC_URI[cloudflared.sha256sum] = "3d97437c71848bd8df68041e12436b484a661d95073ea1937f01a845ce88faa3"
+SRC_URI[cloudflared.sha256sum] = "2b7203b4fb0ba28a0c1e12f8855ce2c25f76d266a8d5edafac5540b6812acff6"
 
 S = "${WORKDIR}"
+
+INHIBIT_PACKAGE_STRIP = "1"
+INHIBIT_PACKAGE_DEBUG_SPLIT = "1"
+INSANE_SKIP:${PN} += "already-stripped"
 
 do_compile() {
     :

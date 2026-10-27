@@ -1,5 +1,5 @@
 SUMMARY = "Command-line fuzzy finder"
-PR = "r1"
+PR = "r0"
 HOMEPAGE = "https://github.com/junegunn/fzf"
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://${WORKDIR}/LICENSE;md5=edd55e9a395baee52799d6fb23fef6e5"
@@ -8,7 +8,7 @@ SRC_URI = " \
     https://github.com/junegunn/fzf/releases/download/v${PV}/fzf-${PV}-linux_arm64.tar.gz;name=arm64 \
     https://raw.githubusercontent.com/junegunn/fzf/v${PV}/LICENSE;name=license;downloadfilename=LICENSE \
 "
-SRC_URI[arm64.sha256sum] = "5d673b849f494f0d64ec471d8640b153ca8849e3846a31da17abdcfce8df6b46"
+SRC_URI[arm64.sha256sum] = "cf058001da21724a469b714a29cf4aab9cbe860d218a0d6c1b5b661efad7784c"
 SRC_URI[license.sha256sum] = "a296f423c0d30ce3581435e78e7e36c5fe73984a882d8720c72e713b4593588b"
 
 S = "${WORKDIR}"

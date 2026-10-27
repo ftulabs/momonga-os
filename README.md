@@ -227,10 +227,10 @@ build directory's `cache/prserv.sqlite3` with the sstate cache so revisions stay
 - GPU: Vulkan, EGL/GLES, and the GBM backend stay installed without a display server, so the
   NVIDIA container runtime can pass the Tegra GPU userspace into containers. `tegra-udrm` provides
   `/dev/dri`.
-- Site: SD card (label `xavier-sd`) at `/mnt/sdcard` and read-only NFS model share, the
-  Momonga extra package feed for dnf, and the CUDA 11.4 toolkit on `PATH`
-  (`xavier-site-config`); Docker data root on the SD card, NVIDIA default runtime, and local
-  registry in `/etc/docker/daemon.json` (`nvidia-docker` bbappend).
+- Site: SD card (label `xavier-sd`) at `/mnt/sdcard`, containerd and Docker enabled by
+  default, read-only NFS model share, the Momonga extra package feed for dnf, and the CUDA 11.4
+  toolkit on `PATH` (`xavier-site-config`); Docker data root on the SD card, NVIDIA default
+  runtime, and local registry in `/etc/docker/daemon.json` (`nvidia-docker` bbappend).
 - SSH: key-only for every user (`PasswordAuthentication no`, `openssh` bbappend).
 
 ## Device Access
