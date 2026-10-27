@@ -280,6 +280,8 @@ usermod --append --groups wheel,docker xavier
 
 The image installs `sudo`. Members of `wheel` can run administrative commands with `sudo`, for example `sudo -i`. Use `su -` when you need a root login shell. The image uses SSH key authentication for root. Configure a key in `config/local.private.conf` before you build. The key installs at `/root/.ssh/authorized_keys`. Root has no password unless you set `MOMONGA_ROOT_PASSWORD_HASH` (from `openssl passwd -6`) in `config/local.private.conf`; that password works on the local console only, because SSH accepts keys only.
 
+The sudo lecture message displayed during authentication can be customized in `config/sudoers.lecture`. The build installs it to `/etc/sudoers.lecture` and configures `lecture_file` in `/etc/sudoers.d/00-lecture`.
+
 ## Reproducibility
 
 The setup script pins these external layers:
