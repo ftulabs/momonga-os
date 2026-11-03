@@ -3,7 +3,7 @@ HOMEPAGE = "https://developers.cloudflare.com/cloudflare-one/connections/connect
 LICENSE = "CLOSED"
 
 SRC_URI = "https://github.com/cloudflare/cloudflared/releases/download/${PV}/cloudflared-linux-arm64;name=cloudflared"
-SRC_URI[cloudflared.sha256sum] = "2b7203b4fb0ba28a0c1e12f8855ce2c25f76d266a8d5edafac5540b6812acff6"
+SRC_URI[cloudflared.sha256sum] = "3df43aedc9ff291d1735b5cb576cb97e0b157488796db2e32b28aecabb445775"
 
 S = "${WORKDIR}"
 

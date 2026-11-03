@@ -5,7 +5,7 @@ LICENSE = "MIT & ISC & BSD-2-Clause & BSD-3-Clause & Artistic-2.0 & Apache-2.0"
 LIC_FILES_CHKSUM = "file://${S}/LICENSE;md5=edc0683b77d2c503217642fa000b5b31"
 
 SRC_URI = "https://nodejs.org/dist/v${PV}/node-v${PV}-linux-arm64.tar.xz;name=arm64"
-SRC_URI[arm64.sha256sum] = "dbabf7a1cbf947e6059ffad2c27b80041db97dea1e553b62afdee7f13fca336e"
+SRC_URI[arm64.sha256sum] = "eb187837a2230d4047161ac0be008584e16b46f726e9c9490ee35dc6b17d9ba8"
 
 S = "${WORKDIR}/node-v${PV}-linux-arm64"
 

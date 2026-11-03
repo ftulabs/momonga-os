@@ -17,11 +17,11 @@ Run from the Poky checkout:
 
 ```sh
 source ./oe-init-build-env build-packages
-bitbake bash bat cloudflared diffutils fzf gdbm nano ncurses neovim nodejs24 \
-  neofetch fastfetch momonga-locale openssl ptest-runner python3 python3-distro glibc-locale \
+bitbake bash bat cloudflared cuda-cupti diffutils fio fzf gdbm nano ncurses neovim nodejs24 \
+  neofetch fastfetch momonga-locale nsight-compute-cli nsight-systems-cli openssl ptest-runner python3 python3-distro glibc-locale \
   python3-jetson-stats python3-numpy python3-nvidia-ml-py python3-onnx \
   python3-onnx-graphsurgeon python3-polygraphy python3-smbus2 python3-tensorrt \
-  tegra-tools tensorrt-trtexec-prebuilt zsh
+  sysstat tegra-tools tensorrt-trtexec-prebuilt zsh
 ```
 
 For a single package, run `bitbake <recipe>` with its recipe name, for example `bitbake fzf`. BitBake builds that recipe and its task/build dependencies. It does not build a flash image. `bitbake package-index` indexes every RPM in the deploy directory; it does not build recipes. The deploy directory contains many build dependencies that are not part of the public feed, so do not publish its RPM wildcard.
