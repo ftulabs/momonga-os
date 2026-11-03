@@ -17,8 +17,8 @@ Run from the Poky checkout:
 
 ```sh
 source ./oe-init-build-env build-packages
-bitbake bash bat cloudflared cuda-cupti diffutils fio fzf gdbm nano ncurses neovim nodejs24 \
-  neofetch fastfetch momonga-locale nsight-compute-cli nsight-systems-cli openssl ptest-runner python3 python3-distro glibc-locale \
+bitbake bash bat cloudflared cuda-cupti diffutils fio fzf gdbm glibc-locale libaio nano ncurses neovim nodejs24 \
+  neofetch fastfetch momonga-locale nsight-compute-cli nsight-systems-cli openssl ptest-runner python3 python3-distro \
   python3-jetson-stats python3-numpy python3-nvidia-ml-py python3-onnx \
   python3-onnx-graphsurgeon python3-polygraphy python3-smbus2 python3-tensorrt \
   sysstat tegra-tools tensorrt-trtexec-prebuilt zsh

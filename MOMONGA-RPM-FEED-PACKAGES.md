@@ -1,6 +1,6 @@
 # Momonga RPM feed package inventory
 
-This file records all 400 RPM package outputs in release `momonga-rpm-feed-2026.11.03-1`, including debug, development, locale, and source RPMs. It is not a list of packages installed in the Xavier image.
+This file records all 404 RPM package outputs in release `momonga-rpm-feed-2026.11.03-2`, including debug, development, locale, and source RPMs. It is not a list of packages installed in the Xavier image.
 
 ## Rebuild the feed packages
 
@@ -8,7 +8,7 @@ From the Poky checkout, initialize the package build directory and build these r
 
 ```sh
 source ./oe-init-build-env build-packages
-bitbake bash bat cloudflared cuda-cupti diffutils fio fzf gdbm glibc-locale nano ncurses neovim nodejs24 \
+bitbake bash bat cloudflared cuda-cupti diffutils fio fzf gdbm glibc-locale libaio nano ncurses neovim nodejs24 \
   neofetch fastfetch momonga-locale nsight-compute-cli nsight-systems-cli openssl ptest-runner python3 python3-distro \
   python3-jetson-stats python3-numpy python3-nvidia-ml-py python3-onnx \
   python3-onnx-graphsurgeon python3-polygraphy python3-smbus2 python3-tensorrt \
@@ -29,6 +29,8 @@ Release `momonga-rpm-feed-2026.10.27-1` adds `cloudflared` 2026.10.4 to address 
 Release `momonga-rpm-feed-2026.10.27-2` adds OpenSSL 3.5.9 packages (`libcrypto3`, `libssl3`, `openssl`, `openssl-bin`, `openssl-conf`, and related packages) to satisfy runtime dependencies for `python3-crypt` and `python3-io` on Xavier.
 
 Release `momonga-rpm-feed-2026.11.03-1` adds CUDA 11.4 CUPTI development headers and runtime packages (`cuda-cupti`, `cuda-cupti-dev`, `cuda-cupti-dbg`, `cuda-cupti-stubs`), Nsight Systems CLI profiler (`nsight-systems-cli`), Nsight Compute CLI profiler (`nsight-compute-cli`), `fio` storage benchmark, and `sysstat` performance monitoring tools (`iostat`, `sar`, `mpstat`, `pidstat`). It also upgrades `cloudflared` to 2026.10.7 and `nodejs24` to 24.22.2.
+
+Release `momonga-rpm-feed-2026.11.03-2` adds `libaio` packages (`libaio1`, `libaio-dev`, `libaio-staticdev`, `libaio-dbg`) to satisfy the `libaio.so.1` runtime requirement for `fio`. It updates `nsight-systems-cli` to `2022.5.2.171+32559007v0-r1`, bundling `QdstrmImporter` and its headless library dependencies into the package (with a `/usr/bin/QdstrmImporter` symlink) so `nsys profile` can auto-import `.qdstrm` into `.nsys-rep` and `nsys stats` can decode traces directly on Xavier.
 
 ## RPM package outputs
 
@@ -156,6 +158,10 @@ Package names and their exact RPM version-release values, read from each RPM hea
 | gcc-for-nvcc | 10.3.0-r0 |
 | gcc-for-nvcc-symlinks | 10.3.0-r0 |
 | glibc-binary-localedata-c | 2.39+git-r0 |
+| libaio-dbg | 0.3.113-r0 |
+| libaio-dev | 0.3.113-r0 |
+| libaio-staticdev | 0.3.113-r0 |
+| libaio1 | 0.3.113-r0 |
 | libcrypto3 | 3.5.9-r0 |
 | libform5 | 6.4-r0 |
 | libformw5 | 6.4-r0 |
@@ -263,10 +269,10 @@ Package names and their exact RPM version-release values, read from each RPM hea
 | nsight-compute-cli | 2022.3.0.22+1-r0 |
 | nsight-compute-cli-dbg | 2022.3.0.22+1-r0 |
 | nsight-compute-cli-dev | 2022.3.0.22+1-r0 |
-| nsight-systems-cli | 2022.5.2.171+32559007v0-r0 |
-| nsight-systems-cli-dbg | 2022.5.2.171+32559007v0-r0 |
-| nsight-systems-cli-dev | 2022.5.2.171+32559007v0-r0 |
-| nsight-systems-cli-qdstrmimporter | 2022.5.2.171+32559007v0-r0 |
+| nsight-systems-cli | 2022.5.2.171+32559007v0-r1 |
+| nsight-systems-cli-dbg | 2022.5.2.171+32559007v0-r1 |
+| nsight-systems-cli-dev | 2022.5.2.171+32559007v0-r1 |
+| nsight-systems-cli-qdstrmimporter | 2022.5.2.171+32559007v0-r1 |
 | openssl | 3.5.9-r0 |
 | openssl-bin | 3.5.9-r0 |
 | openssl-conf | 3.5.9-r0 |
